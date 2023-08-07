@@ -15,6 +15,7 @@ public class GameManager : MonoBehaviour
     public CameraFollower CameraFollower;
     public EnemyManager EnemyManager;
     public UpgradeManager UpgradeManager;
+    public LudeoScripting LudeoScripting;
 
     [Header("UI References")]
     public SliderExtender HealthBar;
@@ -22,6 +23,7 @@ public class GameManager : MonoBehaviour
     public Button Play;
     public TMP_Text Wave;
     public TMP_Text EnemiesLeft;
+    public GameObject Loading;
 
     // runtime
     Player _player;
@@ -33,7 +35,14 @@ public class GameManager : MonoBehaviour
     private void Awake()
     {
         UpgradeManager.Upgraded += NextLevel;
+        LudeoScripting.InitDone += RemoveLoading;
+        LudeoScripting.Init();
         Play.onClick.AddListener(StartGame);
+    }
+
+    private void RemoveLoading()
+    {
+        Loading.SetActive(false);
     }
 
     private void Update()
@@ -60,6 +69,7 @@ public class GameManager : MonoBehaviour
 
     private void EndGame()
     {
+        LudeoScripting.EndGameplay();
         _level = 1;
         MainMenu.SetActive(true);
         Time.timeScale = 1;
@@ -68,6 +78,7 @@ public class GameManager : MonoBehaviour
 
     public void StartGame()
     {
+        LudeoScripting.BeginGameplay();
         _level = 1;
         MainMenu.SetActive(false);
         SpawnPlayer();
