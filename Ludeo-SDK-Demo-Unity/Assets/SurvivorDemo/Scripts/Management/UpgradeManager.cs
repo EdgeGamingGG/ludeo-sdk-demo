@@ -33,7 +33,7 @@ public class UpgradeManager : MonoBehaviour
         }
     }
 
-    private void ChooseUpgrade(UpgradeDefinition upgrade)
+    public void ChooseUpgrade(UpgradeDefinition upgrade)
     {
         switch (upgrade.Key)
         {
