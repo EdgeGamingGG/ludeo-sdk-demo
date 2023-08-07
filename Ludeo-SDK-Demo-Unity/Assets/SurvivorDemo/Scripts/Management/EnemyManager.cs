@@ -34,7 +34,7 @@ public class EnemyManager : MonoBehaviour
         while (_enemies.Count < enemyCount)
         {
             var enemy = Instantiate(p_Enemy, _enemiesParent.transform);
-            const float size = 3f;
+            const float size = 5f;
             var position = target.position + new Vector3(
                 rand.Next((int)(-_spawnArea.x - level * size), (int)(_spawnArea.x + level * size)),
                 1f,

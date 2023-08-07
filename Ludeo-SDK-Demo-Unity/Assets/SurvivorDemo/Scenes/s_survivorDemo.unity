@@ -2650,7 +2650,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   p_Enemy: {fileID: 8760019898128387217, guid: 372c31bd820553a4fbc91a58a4485891, type: 3}
-  _spawnArea: {x: 60, y: 60}
+  _spawnArea: {x: 40, y: 40}
 --- !u!1 &1963629992
 GameObject:
   m_ObjectHideFlags: 0
