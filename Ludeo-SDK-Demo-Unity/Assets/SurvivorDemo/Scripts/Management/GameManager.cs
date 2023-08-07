@@ -1,3 +1,4 @@
+using LudeoSDK;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -80,6 +81,7 @@ public class GameManager : MonoBehaviour
     {
         LudeoScripting.BeginGameplay();
         _level = 1;
+        LudeoManager.SetGameplayState("wave", _level);
         MainMenu.SetActive(false);
         SpawnPlayer();
         CameraFollower.Init(_player.transform);
@@ -90,6 +92,8 @@ public class GameManager : MonoBehaviour
     {
         _upgradesShowing = false;
         _level++;
+        LudeoManager.SetGameplayState("wave", _level);
+        LudeoManager.MarkHighlight();
         GenerateLevel(_level);
     }
 
