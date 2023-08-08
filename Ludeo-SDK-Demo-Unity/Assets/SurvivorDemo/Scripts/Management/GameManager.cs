@@ -16,7 +16,7 @@ public class GameManager : MonoBehaviour
     public CameraFollower CameraFollower;
     public EnemyManager EnemyManager;
     public UpgradeManager UpgradeManager;
-    public LudeoScripting LudeoScripting;
+    public LudeoWrapper LudeoScripting;
 
     [Header("UI References")]
     public SliderExtender HealthBar;
@@ -80,7 +80,7 @@ public class GameManager : MonoBehaviour
     {
         LudeoManager.SetGameplayState("PlayerDeath", true);
         LudeoHighlight.gameObject.SetActive(false);
-        LudeoScripting.EndGameplay();
+        LudeoManager.EndGameplay();
         _level = 1;
         MainMenu.SetActive(true);
         Time.timeScale = 1;

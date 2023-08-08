@@ -87,7 +87,7 @@ GameObject:
   - component: {fileID: 4714823967672491316}
   - component: {fileID: 3044486845736406870}
   m_Layer: 5
-  m_Name: p_UpgradeCard
+  m_Name: p_upgradeCard
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

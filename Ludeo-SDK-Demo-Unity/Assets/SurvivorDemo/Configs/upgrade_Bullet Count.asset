@@ -10,10 +10,10 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 681558b0e942a3841bdb171b13ddf294, type: 3}
-  m_Name: Heal
+  m_Name: upgrade_Bullet Count
   m_EditorClassIdentifier: 
-  Key: heal
-  Value: 2000
-  Name: Heal
+  Key: bullet_count
+  Value: 0.8
+  Name: Increase Bullet Count
   Description: 
-  View: {fileID: 21300000, guid: dac2fcaef2027da4bba0cc42b881450e, type: 3}
+  View: {fileID: 21300000, guid: fe8cecbd5d5591749871998853301140, type: 3}
