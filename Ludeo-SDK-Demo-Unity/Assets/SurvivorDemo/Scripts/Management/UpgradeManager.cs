@@ -5,32 +5,30 @@ using Random = UnityEngine.Random;
 
 public class UpgradeManager : MonoBehaviour
 {
-    public UIView_UpgradeCard p_UpgradeCard;
-    public RectTransform Content;
+    public UIView_UpgradeScreen p_UpgradeScreen;
     public List<UpgradeDefinition> Upgrades;
 
     public event Action<UpgradeDefinition> Upgraded;
 
-    private void Awake()
-    {
-        gameObject.SetActive(false);
-        CleanContent();
-    }
+    UIView_UpgradeScreen _runtimeScreen;
 
     public void ShowUpgrades()
     {
-        gameObject.SetActive(true);
-        CleanContent();
-        List<UpgradeDefinition> ups;
-        ups = new List<UpgradeDefinition>(Upgrades);
+        _runtimeScreen = Instantiate(p_UpgradeScreen);
+        _runtimeScreen.gameObject.SetActive(true);
+        List<UpgradeDefinition> upgradePool;
+        UpgradeDefinition[] upgradesChosen;
+        upgradePool = new List<UpgradeDefinition>(Upgrades);
+        upgradesChosen = new UpgradeDefinition[3];
 
         for (int i = 0; i < 3; i++)
         {
-            var random = ups[Random.Range(0, ups.Count)];
-            ups.Remove(random);
-            var card = Instantiate(p_UpgradeCard, Content);
-            card.Init(random, () => ChooseUpgrade(random));
+            var randomUpgrade = upgradePool[Random.Range(0, upgradePool.Count)];
+            upgradePool.Remove(randomUpgrade);
+            upgradesChosen[i] = randomUpgrade;
         }
+
+        _runtimeScreen.Init(upgradesChosen, ChooseUpgrade);
     }
 
     public void ChooseUpgrade(UpgradeDefinition upgrade)
@@ -68,16 +66,9 @@ public class UpgradeManager : MonoBehaviour
                 throw new InvalidOperationException($"Invalid upgrade key: {upgrade.Key}");
         }
 
-        gameObject.SetActive(false);
+        if (_runtimeScreen != null)
+            Destroy(_runtimeScreen.gameObject);
 
         Upgraded?.Invoke(upgrade);
-    }
-
-    private void CleanContent()
-    {
-        foreach (Transform child in Content.transform)
-        {
-            Destroy(child.gameObject);
-        }
     }
 }
