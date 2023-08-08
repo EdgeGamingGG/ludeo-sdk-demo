@@ -70,6 +70,16 @@ public class GameManager : MonoBehaviour
             return;
         }
 
+        var control = Input.GetKey(KeyCode.LeftControl) || Input.GetKey(KeyCode.LeftControl);
+        var l = Input.GetKeyDown(KeyCode.L);
+        if (LudeoHighlight.gameObject.activeInHierarchy && control && l)
+        {
+            var ok = LudeoManager.MarkHighlight();
+            print($"<color=red>Marked highlight: {ok}</color>");
+
+            return;
+        }
+
         if (!EnemyManager.AnyEnemyAlive)
         {
             _upgradesShowing = true;
