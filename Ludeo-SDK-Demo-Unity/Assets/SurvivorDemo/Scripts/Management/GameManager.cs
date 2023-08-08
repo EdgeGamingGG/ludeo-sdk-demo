@@ -79,6 +79,7 @@ public class GameManager : MonoBehaviour
 
     private void EndGame()
     {
+        UpgradeManager.ResetUpgrades();
         LudeoManager.SetGameplayState("PlayerDeath", true);
         LudeoHighlight.gameObject.SetActive(false);
         LudeoManager.EndGameplay();

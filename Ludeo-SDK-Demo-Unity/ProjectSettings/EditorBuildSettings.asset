@@ -4,5 +4,8 @@
 EditorBuildSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 2
-  m_Scenes: []
+  m_Scenes:
+  - enabled: 1
+    path: Assets/SurvivorDemo/Scenes/s_survivorDemo.unity
+    guid: 44cb1b01c82b0e14888aab9f596af62d
   m_configObjects: {}

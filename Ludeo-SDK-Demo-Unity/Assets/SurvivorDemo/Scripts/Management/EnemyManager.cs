@@ -12,10 +12,14 @@ public class EnemyManager : MonoBehaviour
     [Header("Parameters")]
     public Vector2 _spawnArea = new Vector2(50, 50);
 
-    public int EnemiesLeft => _enemies.Count;
-    public bool AnyEnemyAlive => _enemies.Count > 0;
+    public int EnemiesLeft => _enemyCountForLevel - _enemiesKilledForLevel;
+    public bool AnyEnemyAlive => EnemiesLeft > 0;
 
-    private int _enemiesKilled = 0;
+    public int EnemyCountForLevel => _enemyCountForLevel;
+    private int _enemyCountForLevel;
+
+    private int _enemiesKilledTotal = 0;
+    private int _enemiesKilledForLevel = 0;
     List<Enemy> _enemies;
     GameObject _enemiesParent;
 
@@ -23,10 +27,11 @@ public class EnemyManager : MonoBehaviour
     {
         if (level == 0)
         {
-            _enemiesKilled = 0;
+            _enemiesKilledTotal = 0;
         }
 
-        var enemyCount = level * Random.Range(10, 20);
+        _enemiesKilledForLevel = 0;
+        _enemyCountForLevel = level * Random.Range(10, 20);
 
         if (_enemiesParent != null)
             Destroy(_enemiesParent);
@@ -35,10 +40,10 @@ public class EnemyManager : MonoBehaviour
         _enemiesParent.transform.position = Vector3.zero;
         _enemiesParent.transform.rotation = Quaternion.identity;
 
-        _enemies = new List<Enemy>(enemyCount);
+        _enemies = new List<Enemy>(_enemyCountForLevel);
         System.Random rand = new System.Random((int)Time.time);
 
-        while (_enemies.Count < enemyCount)
+        for (int i = 0; i < _enemyCountForLevel; i++)
         {
             var enemy = Instantiate(p_Enemy, _enemiesParent.transform);
             const float size = 5f;
@@ -89,14 +94,15 @@ public class EnemyManager : MonoBehaviour
             }
 
             enemy.OnDeath += OnEnemyDeath;
-            yield return null;
+            yield return new WaitForSecondsRealtime(Random.Range(0f, 0.3f));
         }
     }
 
     private void OnEnemyDeath(Enemy enemy)
     {
-        _enemiesKilled++;
-        LudeoManager.SetGameplayState("NormalKill", _enemiesKilled);
+        _enemiesKilledTotal++;
+        _enemiesKilledForLevel++;
+        LudeoManager.SetGameplayState("NormalKill", _enemiesKilledTotal);
         _enemies.Remove(enemy);
     }
 

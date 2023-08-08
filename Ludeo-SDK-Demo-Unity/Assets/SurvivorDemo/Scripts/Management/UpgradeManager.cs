@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
@@ -31,6 +32,14 @@ public class UpgradeManager : MonoBehaviour
         _runtimeScreen.Init(upgradesChosen, ChooseUpgrade);
     }
 
+    float _cooldownAddon = 0f;
+    float _atkSpeedBoosts = 1;
+    public void ResetUpgrades()
+    {
+        _cooldownAddon = 0f;
+        _atkSpeedBoosts = 1;
+    }
+
     public void ChooseUpgrade(UpgradeDefinition upgrade)
     {
         switch (upgrade.Key)
@@ -47,16 +56,21 @@ public class UpgradeManager : MonoBehaviour
                 FindObjectOfType<ShootProjectile>().Damage += (int)upgrade.Value;
                 break;
             case "attack_speed":
+                _atkSpeedBoosts *= upgrade.Value;
                 var abilities = FindObjectsOfType<ShootProjectile>();
                 foreach (var item in abilities)
                 {
                     item.Cooldown *= upgrade.Value;
+                    item.Cooldown = Mathf.Clamp(item.Cooldown, 0.1f, 1000f);
                 }
                 break;
             case "bullet_count":
-                var shoot = FindObjectOfType<ShootProjectile>();
+                var shoot = FindObjectsOfType<ShootProjectile>().OrderBy(s => s.Cooldown).LastOrDefault();
                 var shoot2 = Instantiate(shoot, shoot.transform.parent);
-                shoot2.Cooldown += 0.1f;
+                _cooldownAddon += Random.Range(0.5f, 2f);
+                shoot2.Cooldown += _cooldownAddon;
+                for (int i = 0; i < _atkSpeedBoosts; i++)
+                    shoot2.Cooldown *= _atkSpeedBoosts;
                 FindObjectOfType<Player>().AddAbility(shoot2);
                 break;
             case "time":
