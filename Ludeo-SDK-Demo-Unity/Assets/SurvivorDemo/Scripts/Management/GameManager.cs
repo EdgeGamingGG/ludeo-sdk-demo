@@ -12,11 +12,11 @@ public class GameManager : MonoBehaviour
     public Player Player;
 
     [Header("Scene References")]
-    public Transform PlayerSpawn;
-    public CameraFollower CameraFollower;
     public EnemyManager EnemyManager;
     public UpgradeManager UpgradeManager;
     public LudeoWrapper LudeoScripting;
+    public Transform PlayerSpawn;
+    public CameraFollower CameraFollower;
 
     [Header("UI References")]
     public SliderExtender HealthBar;
@@ -42,6 +42,7 @@ public class GameManager : MonoBehaviour
             var ok = LudeoManager.MarkHighlight();
             print($"Marked highlight: {ok}");
         } );
+
         LudeoHighlight.gameObject.SetActive(false);
         UpgradeManager.Upgraded += NextLevel;
         LudeoScripting.InitDone += RemoveLoading;

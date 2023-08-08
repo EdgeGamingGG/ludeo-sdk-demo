@@ -2390,11 +2390,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Player: {fileID: 8132205128195401901, guid: 43880a5cddd9a534884e845056a38ec3, type: 3}
-  PlayerSpawn: {fileID: 2141255893}
-  CameraFollower: {fileID: 963194229}
   EnemyManager: {fileID: 1934114113}
   UpgradeManager: {fileID: 1934114114}
-  LudeoScripting: {fileID: 0}
+  LudeoScripting: {fileID: 1934114115}
+  PlayerSpawn: {fileID: 2141255893}
+  CameraFollower: {fileID: 963194229}
   HealthBar: {fileID: 38921233}
   MainMenu: {fileID: 669152727}
   Play: {fileID: 1397589887}
