@@ -1,17 +1,53 @@
 using LudeoSDK;
 using System;
-using System.Threading.Tasks;
 using UnityEngine;
 
 public class LudeoWrapper : MonoBehaviour
 {
-    public string SteamUserId;
+    [SerializeField]
+    private string _steamUserId;
+    public string SteamUserId
+    {
+        get => _steamUserId; 
+        set
+        {
+            _steamUserId = value;
+            PlayerPrefs.SetString("SteamUserId", _steamUserId);
+        }
+    }
+
+    //public TMP_InputField SteamUserInput;
     public string APIKey;
 
     public event Action InitDone;
+
+    public bool CanInit 
+    { 
+        get 
+        {
+            if (_isInitialized)
+                return false;
+
+            if (string.IsNullOrEmpty(APIKey))
+                return false;
+
+            if (string.IsNullOrEmpty(_steamUserId))
+                _steamUserId = PlayerPrefs.GetString("SteamUserId", null);
+
+            if (!string.IsNullOrEmpty(_steamUserId))
+                return true;
+
+            return false;
+        } 
+    }
+
+    bool _isInitialized = false;
+
     public void Init()
     {
-        LudeoManager.Init(SteamUserId, LudeoLauncher.Steam, APIKey, new CallbackWithLudeoFlowState(OnLudeoFlowState));
+        if (_isInitialized) return;
+        LudeoManager.Init(_steamUserId, LudeoLauncher.Steam, APIKey, new CallbackWithLudeoFlowState(OnLudeoFlowState));
+        _isInitialized = true;
     }
 
     private void OnLudeoFlowState(LudeoFlowState ludeoFlowState, object data)

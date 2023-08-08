@@ -1,10 +1,6 @@
-using LudeoSDK;
 using System;
 using System.Collections;
-using System.Collections.Generic;
-using TMPro;
 using UnityEngine;
-using UnityEngine.UI;
 
 public class GameManager : MonoBehaviour
 {
@@ -14,45 +10,56 @@ public class GameManager : MonoBehaviour
     [Header("Scene References")]
     public EnemyManager EnemyManager;
     public UpgradeManager UpgradeManager;
-    public LudeoWrapper LudeoScripting;
+    public UIManager UIManager;
+    public LudeoWrapper LudeoWrapper;
     public Transform PlayerSpawn;
     public CameraFollower CameraFollower;
 
-    [Header("UI References")]
-    public SliderExtender HealthBar;
-    public GameObject MainMenu;
-    public Button Play;
-    public TMP_Text Wave;
-    public TMP_Text EnemiesLeft;
-    public GameObject Loading;
-    public Button LudeoHighlight;
-
     // runtime
     Player _player;
+    GameObject _loading;
 
     // level
     int _level = 1;
     bool _upgradesShowing = false;
+    bool _ludeoInitialized = false;
 
     private void Awake()
     {
-        LudeoHelpers.SetLogLevel(LudeoLogLevel.Error);
-        LudeoHighlight.onClick.AddListener(() => 
+        UIManager.SetLudeoHighlightOnClick(() =>
         {
-            var ok = LudeoManager.MarkHighlight();
+            var ok = LudeoSDK.LudeoManager.MarkHighlight();
             print($"Marked highlight: {ok}");
-        } );
+        });
+        UIManager.SetPlayButtonOnClick(() => StartCoroutine(StartGame()));
+        UIManager.BindEnemiesLeft(() => EnemyManager.EnemiesLeft);
+        UIManager.BindHP(() => _player.HP / (float)_player.MaxHP);
+        UIManager.SetApplyConfig(s =>
+        {
+            LudeoWrapper.SteamUserId = s;
+        });
 
-        LudeoHighlight.gameObject.SetActive(false);
         UpgradeManager.Upgraded += NextLevel;
-        LudeoScripting.InitDone += RemoveLoading;
-        LudeoScripting.Init();
-        Play.onClick.AddListener(StartGame);
+        LudeoWrapper.InitDone += FinishedLudeoInit;
+
+        UIManager.SetPlayButtonInteractable(LudeoWrapper.CanInit);
+        //UIManager.SetConfigButtonInteractable(!_ludeoInitialized);
     }
 
-    private void RemoveLoading()
+    private void InitiazlizeLudeo()
     {
-        Loading.SetActive(false);
+        _loading = Instantiate(UIManager.Loading);
+        LudeoWrapper.Init();
+    }
+
+    private void FinishedLudeoInit()
+    {
+        if (_loading != null)
+            Destroy(_loading);
+
+        UIManager.SetPlayButtonInteractable(_ludeoInitialized);
+        _ludeoInitialized = true;
+        //UIManager.SetConfigButtonInteractable(!_ludeoInitialized);
     }
 
     private void Update()
@@ -60,23 +67,11 @@ public class GameManager : MonoBehaviour
         if (_player == null || _upgradesShowing)
             return;
 
-        EnemiesLeft.text = $"Enemies Left: {EnemyManager.EnemiesLeft}";
-
         if (_player.HP <= 0)
         {
             // game over
             EndGame();
             Debug.Log("Game Over");
-            return;
-        }
-
-        var control = Input.GetKey(KeyCode.LeftControl) || Input.GetKey(KeyCode.LeftControl);
-        var l = Input.GetKeyDown(KeyCode.L);
-        if (LudeoHighlight.gameObject.activeInHierarchy && control && l)
-        {
-            var ok = LudeoManager.MarkHighlight();
-            print($"<color=red>Marked highlight: {ok}</color>");
-
             return;
         }
 
@@ -90,24 +85,28 @@ public class GameManager : MonoBehaviour
     private void EndGame()
     {
         UpgradeManager.ResetUpgrades();
-        LudeoManager.SetGameplayState("PlayerDeath", true);
-        LudeoHighlight.gameObject.SetActive(false);
-        LudeoManager.EndGameplay();
+        UIManager.MainMenuTransition();
+        LudeoSDK.LudeoManager.SetGameplayState("PlayerDeath", true);
+        LudeoSDK.LudeoManager.EndGameplay();
         _level = 1;
-        MainMenu.SetActive(true);
         Time.timeScale = 1;
         Destroy(_player.gameObject);
     }
 
-    public void StartGame()
+    public IEnumerator StartGame()
     {
-        LudeoManager.SetGameplayState("PlayerDeath", false);
-        LudeoHighlight.gameObject.SetActive(true);
-        LudeoManager.ReadyForGameplay();
+        if (LudeoWrapper.CanInit)
+        {
+            InitiazlizeLudeo();
+            yield return new WaitUntil(() => _ludeoInitialized);
+        }
+
+        LudeoSDK.LudeoManager.SetGameplayState("PlayerDeath", false);
+        LudeoSDK.LudeoManager.ReadyForGameplay();
+        UIManager.GameplayTransition();
         
         _level = 1;
-        LudeoManager.SetGameplayState("wave", _level);
-        MainMenu.SetActive(false);
+        LudeoSDK.LudeoManager.SetGameplayState("wave", _level);
         SpawnPlayer();
         CameraFollower.Init(_player.transform);
         GenerateLevel(_level);
@@ -120,13 +119,13 @@ public class GameManager : MonoBehaviour
 
         _upgradesShowing = false;
         _level++;
-        LudeoManager.SetGameplayState("wave", _level);
+        LudeoSDK.LudeoManager.SetGameplayState("wave", _level);
         GenerateLevel(_level);
     }
 
     private void GenerateLevel(int level)
     {
-        Wave.text = $"Wave: {level}";
+        UIManager.SetWave(level);
 
         StartCoroutine(EnemyManager.GenerateEnemies(level, _player.transform));
     }
@@ -136,6 +135,5 @@ public class GameManager : MonoBehaviour
         _player = Instantiate(Player);
         _player.transform.position = PlayerSpawn.position;
         _player.Init(EnemyManager);
-        HealthBar.Bind(() => _player.HP / (float)_player.MaxHP);
     }
 }
