@@ -37,13 +37,13 @@ public class GameManager : MonoBehaviour
         UIManager.SetApplyConfig(s =>
         {
             LudeoWrapper.SteamUserId = s;
+            UIManager.SetPlayButtonInteractable(LudeoWrapper.CanInit);
         });
 
         UpgradeManager.Upgraded += NextLevel;
         LudeoWrapper.InitDone += FinishedLudeoInit;
 
         UIManager.SetPlayButtonInteractable(LudeoWrapper.CanInit);
-        //UIManager.SetConfigButtonInteractable(!_ludeoInitialized);
     }
 
     private void InitiazlizeLudeo()
@@ -59,7 +59,6 @@ public class GameManager : MonoBehaviour
 
         UIManager.SetPlayButtonInteractable(_ludeoInitialized);
         _ludeoInitialized = true;
-        //UIManager.SetConfigButtonInteractable(!_ludeoInitialized);
     }
 
     private void Update()
