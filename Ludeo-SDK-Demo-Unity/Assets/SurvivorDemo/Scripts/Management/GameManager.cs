@@ -25,6 +25,7 @@ public class GameManager : MonoBehaviour
     public TMP_Text Wave;
     public TMP_Text EnemiesLeft;
     public GameObject Loading;
+    public Button LudeoHighlight;
 
     // runtime
     Player _player;
@@ -35,6 +36,13 @@ public class GameManager : MonoBehaviour
 
     private void Awake()
     {
+        LudeoHelpers.SetLogLevel(LudeoLogLevel.Error);
+        LudeoHighlight.onClick.AddListener(() => 
+        {
+            var ok = LudeoManager.MarkHighlight();
+            print($"Marked highlight: {ok}");
+        } );
+        LudeoHighlight.gameObject.SetActive(false);
         UpgradeManager.Upgraded += NextLevel;
         LudeoScripting.InitDone += RemoveLoading;
         LudeoScripting.Init();
@@ -70,6 +78,8 @@ public class GameManager : MonoBehaviour
 
     private void EndGame()
     {
+        LudeoManager.SetGameplayState("PlayerDeath", true);
+        LudeoHighlight.gameObject.SetActive(false);
         LudeoScripting.EndGameplay();
         _level = 1;
         MainMenu.SetActive(true);
@@ -79,7 +89,10 @@ public class GameManager : MonoBehaviour
 
     public void StartGame()
     {
-        LudeoScripting.BeginGameplay();
+        LudeoManager.SetGameplayState("PlayerDeath", false);
+        LudeoHighlight.gameObject.SetActive(true);
+        LudeoManager.ReadyForGameplay();
+        
         _level = 1;
         LudeoManager.SetGameplayState("wave", _level);
         MainMenu.SetActive(false);
@@ -90,10 +103,12 @@ public class GameManager : MonoBehaviour
 
     private void NextLevel(UpgradeDefinition definition)
     {
+        if (EnemyManager.AnyEnemyAlive)
+            return;
+
         _upgradesShowing = false;
         _level++;
         LudeoManager.SetGameplayState("wave", _level);
-        LudeoManager.MarkHighlight();
         GenerateLevel(_level);
     }
 

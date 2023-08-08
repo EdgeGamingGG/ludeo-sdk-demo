@@ -8,7 +8,7 @@ public class EditorCheats : MonoBehaviour
 {
     public Button Invincible;
 
-    private void Awake()
+    private void Start()
     {
         Invincible.onClick.AddListener(MakePlayerSuperStrong);
     }

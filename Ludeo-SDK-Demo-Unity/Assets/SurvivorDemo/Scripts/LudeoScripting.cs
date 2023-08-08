@@ -58,7 +58,7 @@ public class LudeoScripting : MonoBehaviour
             case LudeoFlowState.WaitingForReadyForGameplay:
                 break;
             case LudeoFlowState.WaitingForGameplayBegin:
-                // Code for WaitingForGameplayBegin
+                BeginGameplay();
                 break;
             case LudeoFlowState.WaitingForUserInteraction:
                 // Code for WaitingForUserInteraciton

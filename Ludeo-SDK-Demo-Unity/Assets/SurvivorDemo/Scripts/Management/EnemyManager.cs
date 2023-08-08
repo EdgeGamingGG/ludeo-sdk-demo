@@ -1,3 +1,4 @@
+using LudeoSDK;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -14,11 +15,17 @@ public class EnemyManager : MonoBehaviour
     public int EnemiesLeft => _enemies.Count;
     public bool AnyEnemyAlive => _enemies.Count > 0;
 
+    private int _enemiesKilled = 0;
     List<Enemy> _enemies;
     GameObject _enemiesParent;
 
     public IEnumerator GenerateEnemies(int level, Transform target)
     {
+        if (level == 0)
+        {
+            _enemiesKilled = 0;
+        }
+
         var enemyCount = level * Random.Range(10, 20);
 
         if (_enemiesParent != null)
@@ -88,6 +95,8 @@ public class EnemyManager : MonoBehaviour
 
     private void OnEnemyDeath(Enemy enemy)
     {
+        _enemiesKilled++;
+        LudeoManager.SetGameplayState("NormalKill", _enemiesKilled);
         _enemies.Remove(enemy);
     }
 
