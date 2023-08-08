@@ -1,10 +1,21 @@
+using LudeoSDK;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class Player : MonoBehaviour
 {
     public float Speed = 10f;
-    public int MaxHP = 100;
+    [SerializeField]
+    private int _maxHP = 100;
+    public int MaxHP
+    {
+        get => _maxHP; 
+        set
+        {
+            _maxHP = value;
+            LudeoManager.SetGameplayState(LudeoWrapper.PLAYER_MAXHP, MaxHP);
+        }
+    }
     [field: SerializeField]
     public int HP { get; private set; } = 100;
 
@@ -14,6 +25,11 @@ public class Player : MonoBehaviour
     private void Awake()
     {
         HP = MaxHP;
+
+        LudeoManager.SetGameplayState(LudeoWrapper.PLAYER_MAXHP, MaxHP);
+        LudeoManager.SetGameplayState(LudeoWrapper.PLAYER_ABILITY_COUNT, 1);
+        LudeoManager.SetGameplayState(LudeoWrapper.PLAYER_HP, HP);
+
     }
 
     public void Init(EnemyManager enemyManager)
@@ -36,6 +52,9 @@ public class Player : MonoBehaviour
             transform.position += Vector3.right * horizonatal * Time.deltaTime * Speed;
         }
 
+        LudeoManager.SetGameplayState(LudeoWrapper.PLAYER_POSITION, 
+            new Vec3(transform.position.x, transform.position.y, transform.position.z));
+
         _memo.Clear();
         foreach (var ability in Abilities)
         {
@@ -55,6 +74,8 @@ public class Player : MonoBehaviour
         {
             HP = 0;
         }
+
+        LudeoManager.SetGameplayState(LudeoWrapper.PLAYER_HP, HP);
     }
 
     public void Heal(int amount)
@@ -64,10 +85,13 @@ public class Player : MonoBehaviour
         {
             HP = MaxHP;
         }
+
+        LudeoManager.SetGameplayState(LudeoWrapper.PLAYER_HP, HP);
     }
 
     public void AddAbility(Ability ability)
     {
         Abilities.Add(ability);
+        LudeoManager.SetGameplayState(LudeoWrapper.PLAYER_ABILITY_COUNT, Abilities.Count);
     }
 }

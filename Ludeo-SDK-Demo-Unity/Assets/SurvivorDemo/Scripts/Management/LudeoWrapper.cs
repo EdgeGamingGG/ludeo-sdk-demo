@@ -1,9 +1,16 @@
 using LudeoSDK;
 using System;
+using UnityEditor;
 using UnityEngine;
 
 public class LudeoWrapper : MonoBehaviour
 {
+    public const string WAVE = "Wave";
+    public const string PLAYER_POSITION = "Player_Position";
+    public const string PLAYER_HP = "Player_HP";
+    public const string PLAYER_MAXHP = "Player_MaxHP";
+    public const string PLAYER_ABILITY_COUNT = "Player_Ability_Count";
+
     [SerializeField]
     private string _steamUserId;
     public string SteamUserId
@@ -42,10 +49,13 @@ public class LudeoWrapper : MonoBehaviour
     }
 
     bool _isInitialized = false;
+    string _guid = null;
 
-    public void Init()
+    public void Init(string guid)
     {
         if (_isInitialized) return;
+
+        _guid = guid;
         LudeoManager.Init(_steamUserId, LudeoLauncher.Steam, APIKey, new CallbackWithLudeoFlowState(OnLudeoFlowState));
         _isInitialized = true;
     }
@@ -58,23 +68,23 @@ public class LudeoWrapper : MonoBehaviour
         switch (ludeoFlowState)
         {
             case LudeoFlowState.WaitingForUserInteraction:
-            case LudeoFlowState.WaitingForReadyForGameplay:
-            case LudeoFlowState.WaitingForGetGameplayDefinitions:
+            case LudeoFlowState.LoadingGameplayData:
             case LudeoFlowState.NewLudeoSelected:
-            case LudeoFlowState.GameplayOn:
             case LudeoFlowState.Initialization:
                 break;
             case LudeoFlowState.WaitingForLoadGameplayData:
-                msg = LudeoManager.LoadGameplayData();
+                if (string.IsNullOrEmpty(_guid))
+                    msg = LudeoManager.LoadGameplayData();
+                else
+                    msg = LudeoManager.LoadGameplayData(new Guid(_guid));
+                break;
+            case LudeoFlowState.WaitingForReadyForGameplay:
+                LudeoSDK.LudeoManager.ReadyForGameplay();
                 break;
             case LudeoFlowState.WaitingForSetGameplayDefinitions:
                 var definitions = new GameplayDefinitions();
-
-                definitions.AddDefinition("wave", 0);
-                definitions.AddDefinition("playerPosition", 0);
-                definitions.AddDefinition("playerParameters", null);
-                definitions.AddDefinition("enemyPositions", null);
-                definitions.AddDefinition("enemyParamters", null);
+                
+                LudeoManager.SetGameplayDefinitions(definitions);
 
                 InitDone?.Invoke();
                 break;
@@ -83,6 +93,27 @@ public class LudeoWrapper : MonoBehaviour
                 break;
             case LudeoFlowState.Error:
                 Debug.LogError($"Unhandled {ludeoFlowState}");
+                break;
+            // PLAYER FLOW
+            case LudeoFlowState.WaitingForGetGameplayDefinitions:
+
+                LudeoManager.GetGameplayDefinitionsKeys(LudeoParam.Int, out string[] keys);
+                LudeoManager.GetGameplayDefinition("wave", out int value);
+                LudeoManager.GetGameplayDefinition("NormalKill", out int value2);
+                LudeoManager.GetGameplayStateKeys(LudeoParam.Int, out string[] keys2);
+                LudeoManager.GetGameplayStateKeys(LudeoParam.String, out string[] keys3);
+                LudeoManager.GetGameplayStateKeys(LudeoParam.Objects, out string[] keys4);
+                LudeoManager.GetGameplayStateKeys(LudeoParam.Float, out string[] keys5);
+
+                LudeoManager.GetGameplayState("NormalKill", out int value3);
+                LudeoManager.GetGameplayState("wave", out int value4);
+
+                LudeoManager.ReadyForGameplay();
+
+                break;
+            case LudeoFlowState.GameplayOn:
+                _isInitialized = true;
+                InitDone?.Invoke();
                 break;
             default:
                 Debug.LogError($"Unhandled {ludeoFlowState}");

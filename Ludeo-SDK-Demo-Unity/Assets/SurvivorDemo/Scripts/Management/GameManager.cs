@@ -49,7 +49,9 @@ public class GameManager : MonoBehaviour
     private void InitiazlizeLudeo()
     {
         _loading = Instantiate(UIManager.Loading);
-        LudeoWrapper.Init();
+        var guid = "9e954a1a-4e56-4923-9c30-017a56da83ad";
+        guid = null;
+        LudeoWrapper.Init(guid);
     }
 
     private void FinishedLudeoInit()
@@ -101,11 +103,11 @@ public class GameManager : MonoBehaviour
         }
 
         LudeoSDK.LudeoManager.SetGameplayState("PlayerDeath", false);
-        LudeoSDK.LudeoManager.ReadyForGameplay();
+        
         UIManager.GameplayTransition();
         
         _level = 1;
-        LudeoSDK.LudeoManager.SetGameplayState("wave", _level);
+        LudeoSDK.LudeoManager.SetGameplayState(LudeoWrapper.WAVE, _level);
         SpawnPlayer();
         CameraFollower.Init(_player.transform);
         GenerateLevel(_level);
@@ -118,7 +120,7 @@ public class GameManager : MonoBehaviour
 
         _upgradesShowing = false;
         _level++;
-        LudeoSDK.LudeoManager.SetGameplayState("wave", _level);
+        LudeoSDK.LudeoManager.SetGameplayState(LudeoWrapper.WAVE, _level);
         GenerateLevel(_level);
     }
 
