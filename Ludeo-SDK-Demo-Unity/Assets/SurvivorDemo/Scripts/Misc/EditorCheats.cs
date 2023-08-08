@@ -16,7 +16,7 @@ public class EditorCheats : MonoBehaviour
     private void MakePlayerSuperStrong()
     {
         var player = FindObjectOfType<Player>();
-        var upgrade = FindObjectOfType<UpgradeManager>(true);
+        var upgrade = FindObjectOfType<UpgradeManager>();
         player.MaxHP = 100_000;
         player.Heal(100_000);
         upgrade.ChooseUpgrade(new UpgradeDefinition() { Key = "damage", Value = 100_000 });
