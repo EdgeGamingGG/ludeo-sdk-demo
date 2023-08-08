@@ -34,6 +34,7 @@ public class Enemy : MonoBehaviour
         transform.Translate((_target.position - transform.position).normalized * Time.deltaTime * Speed, Space.World);
     }
 
+    bool _dead = false;
     public void TakeDamage(int damage)
     {
         HP -= damage;
@@ -53,6 +54,10 @@ public class Enemy : MonoBehaviour
 
     private void Die()
     {
+        if (_dead)
+            return;
+
+        _dead = true;
         Destroy(gameObject);
         OnDeath?.Invoke(this);
     }
