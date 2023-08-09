@@ -1,7 +1,8 @@
 using System;
-using System.Collections;
-using System.Collections.Generic;
 using TMPro;
+#if UNITY_EDITOR
+using UnityEditor;
+#endif
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -19,6 +20,7 @@ public class UIManager : MonoBehaviour
     public Button Config;
     public Button PlayLudeo;
     public Button ApplyConfig;
+    public Button ExitButton;
     public TMP_InputField SteamIDInput;
     public TMP_Text SteamIDText;
 
@@ -34,6 +36,10 @@ public class UIManager : MonoBehaviour
 
     private void Awake()
     {
+#if UNITY_EDITOR
+        ExitButton.onClick.AddListener(() => EditorApplication.ExitPlaymode());
+#endif
+        ExitButton.onClick.AddListener(() => Application.Quit());
         MainMenuTransition();
 
         Config.onClick.AddListener(() => ConfigTransition());
