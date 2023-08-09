@@ -33,7 +33,11 @@ public class GameManager : MonoBehaviour
             var ok = LudeoSDK.LudeoManager.MarkHighlight();
             print($"Marked highlight: {ok}");
         });
-        UIManager.SetPlayButtonOnClick(() => StartCoroutine(StartGame()));
+        UIManager.SetPlayButtonOnClick(() =>
+        {
+            _guid = null;
+            StartCoroutine(StartGame());
+        });
         UIManager.BindEnemiesLeft(() => EnemyManager.EnemiesLeft);
         UIManager.BindHP(() => _player.HP / (float)_player.MaxHP);
         UIManager.SetApplyConfig(s =>
@@ -171,11 +175,15 @@ public class GameManager : MonoBehaviour
         LudeoManager.GetGameplayState(LudeoWrapper.PLAYER_HP, out int hp);
         _player.HP = hp;
 
+        UpgradeManager.Upgraded -= NextLevel;
+
         LudeoManager.GetGameplayState(LudeoWrapper.PLAYER_ABILITY_COUNT, out int abilityCount);
         for (int i = 1; i < abilityCount; i++)
         {
             UpgradeManager.ChooseUpgrade(new UpgradeDefinition() { Key = "bullet_count", Value = 1 });
         }
+
+        UpgradeManager.Upgraded += NextLevel;
 
         for (int i = 0; i < abilityCount; i++)
         {
