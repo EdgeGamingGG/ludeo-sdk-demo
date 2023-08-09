@@ -5,11 +5,27 @@ using UnityEngine;
 
 public class LudeoWrapper : MonoBehaviour
 {
+    // Level
     public const string WAVE = "Wave";
+    public const string TIMESCALE = "TimeScale";
     public const string PLAYER_POSITION = "Player_Position";
+
+    // Player
     public const string PLAYER_HP = "Player_HP";
     public const string PLAYER_MAXHP = "Player_MaxHP";
+
+    // Abilities
     public const string PLAYER_ABILITY_COUNT = "Player_Ability_Count";
+    public const string ABILITY_COOLDOWN = "Ability_Cooldown";
+    public const string ABILITY_DAMAGE = "Ability_Damage";
+
+    // Enemies
+    public const string ENEMY_COUNT = "Enemy_Count";
+    public const string ENEMY_HP = "Enemy_HP";
+    public const string ENEMY_MAXHP = "Enemy_MaxHP";
+    public const string ENEMY_POSITION = "Enemy_Position";
+    public const string ENEMY_DAMAGE = "Enemy_Damage";
+    public const string ENEMY_SPEED = "Enemy_Speed";
 
     [SerializeField]
     private string _steamUserId;

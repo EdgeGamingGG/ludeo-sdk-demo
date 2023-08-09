@@ -1,3 +1,4 @@
+using LudeoSDK;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -6,7 +7,19 @@ public class ShootProjectile : Ability
 {
     public Transform Origin;
     public Projectile Projectile;
-    public int Damage = 10;
+
+    [SerializeField]
+    private int _damage = 10;
+    public int Damage
+    {
+        get => _damage; 
+        set
+        {
+            LudeoManager.SetGameplayState(gameObject.GetInstanceID()
+                               + LudeoWrapper.ABILITY_DAMAGE, value);
+            _damage = value;
+        }
+    }
 
     public override void Use(Transform target)
     {

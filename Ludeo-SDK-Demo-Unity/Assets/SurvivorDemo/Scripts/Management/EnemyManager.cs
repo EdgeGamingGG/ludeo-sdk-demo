@@ -71,7 +71,6 @@ public class EnemyManager : MonoBehaviour
                     var randomAddon = Random.Range(1, (rand2 - 80) / 3f);
                     int hpbuff = (int)(level * randomAddon);
                     enemy.MaxHp += hpbuff;
-                    enemy.HP = enemy.MaxHp;
                     enemy.transform.localScale *= 1 + randomAddon / 6f;
                 }
             }
@@ -79,7 +78,6 @@ public class EnemyManager : MonoBehaviour
             if (level > 6)
             {
                 enemy.MaxHp += level;
-                enemy.HP = enemy.MaxHp;
             }
 
             if (level > 8)
@@ -95,6 +93,7 @@ public class EnemyManager : MonoBehaviour
 
             enemy.OnDeath += OnEnemyDeath;
             yield return new WaitForSeconds(Random.Range(0f, 0.3f));
+            LudeoManager.SetGameplayState(LudeoWrapper.ENEMY_COUNT, i);
         }
     }
 
@@ -102,6 +101,7 @@ public class EnemyManager : MonoBehaviour
     {
         _enemiesKilledTotal++;
         _enemiesKilledForLevel++;
+        LudeoManager.SetGameplayState(LudeoWrapper.ENEMY_COUNT, EnemiesLeft);
         LudeoManager.SetGameplayState("NormalKill", _enemiesKilledTotal);
         _enemies.Remove(enemy);
     }

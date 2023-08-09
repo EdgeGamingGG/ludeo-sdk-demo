@@ -1,3 +1,4 @@
+using LudeoSDK;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -82,6 +83,7 @@ public class UpgradeManager : MonoBehaviour
                 break;
             case "time":
                 Time.timeScale += upgrade.Value;
+                LudeoManager.SetGameplayState(LudeoWrapper.TIMESCALE, Time.timeScale);
                 break;
             default:
                 throw new InvalidOperationException($"Invalid upgrade key: {upgrade.Key}");
