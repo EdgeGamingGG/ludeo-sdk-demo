@@ -28,6 +28,8 @@ public class LudeoWrapper : MonoBehaviour
     public const string ENEMY_DAMAGE = "Enemy_Damage";
     public const string ENEMY_SPEED = "Enemy_Speed";
 
+    public UIView_Logger EditorLog;
+
     [SerializeField]
     private string _steamUserId;
     public string SteamUserId
@@ -100,7 +102,7 @@ public class LudeoWrapper : MonoBehaviour
                 break;
             case LudeoFlowState.WaitingForSetGameplayDefinitions:
                 var definitions = new GameplayDefinitions();
-                
+
                 LudeoManager.SetGameplayDefinitions(definitions);
 
                 InitDone?.Invoke();
@@ -111,8 +113,13 @@ public class LudeoWrapper : MonoBehaviour
             case LudeoFlowState.Error:
                 Debug.LogError($"Unhandled {ludeoFlowState}");
                 break;
+
+
             // PLAYER FLOW
             case LudeoFlowState.WaitingForGetGameplayDefinitions:
+                
+                LudeoManager.GetGameplayDefinitionsKeys(LudeoParam.Int, out string[] def1);
+
                 LudeoManager.GetGameplayStateKeys(LudeoParam.Vec3, out string[] keys1);
                 LudeoManager.GetGameplayStateKeys(LudeoParam.Int, out string[] keys2);
                 LudeoManager.GetGameplayStateKeys(LudeoParam.String, out string[] keys3);
@@ -121,8 +128,16 @@ public class LudeoWrapper : MonoBehaviour
                 LudeoManager.GetGameplayStateKeys(LudeoParam.Bool, out string[] keys6);
                 LudeoManager.GetGameplayStateKeys(LudeoParam.Quatern, out string[] keys7);
 
-                LudeoManager.ReadyForGameplay();
+                LogKeys(keys1);
+                LogKeys(keys2);
+                LogKeys(keys3);
+                LogKeys(keys4);
+                LogKeys(keys5);
+                LogKeys(keys6);
+                LogKeys(keys7);
 
+                LudeoManager.ReadyForGameplay();
+                 
                 break;
             case LudeoFlowState.GameplayOn:
                 _isInitialized = true;
@@ -134,5 +149,40 @@ public class LudeoWrapper : MonoBehaviour
         }
 
         print("<color=green>" + (msg.HasValue ? msg.Value.ToString() : "no message") + "</color>");
+    }
+
+    private void LogKeys(string[] keys)
+    {
+        if (EditorLog == null)
+            return;
+
+        if (keys == null || keys.Length == 0)
+            return;
+
+        foreach (var key in keys)
+        {
+            var msg = key + ": ";
+            if (LudeoManager.GetGameplayState(key, out bool val1) == LudeoMessage.Success)
+            {
+                msg += val1;
+            }
+            else if (LudeoManager.GetGameplayState(key, out float val2) == LudeoMessage.Success)
+            {
+                msg += val2;
+            }
+            else if (LudeoManager.GetGameplayState(key, out int val3) == LudeoMessage.Success)
+            {
+                msg += val3;
+            }
+            else if (LudeoManager.GetGameplayState(key, out Quatern val4) == LudeoMessage.Success)
+            {
+                msg += val4;
+            }
+            else if (LudeoManager.GetGameplayState(key, out Vec3 val5) == LudeoMessage.Success)
+            {
+                msg += val5;
+            }
+            EditorLog.QueueLog(msg);
+        }
     }
 }

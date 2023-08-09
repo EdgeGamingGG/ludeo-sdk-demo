@@ -15,8 +15,8 @@ public abstract class Ability : MonoBehaviour
         set
         {
             _cooldown = value;
-            LudeoManager.SetGameplayState(gameObject.GetInstanceID()
-                + LudeoWrapper.ABILITY_COOLDOWN, _cooldown);
+            //LudeoManager.SetGameplayState(gameObject.GetInstanceID()
+            //    + LudeoWrapper.ABILITY_COOLDOWN, _cooldown);
         }
     }
 
@@ -24,8 +24,8 @@ public abstract class Ability : MonoBehaviour
 
     private void Awake()
     {
-        LudeoManager.SetGameplayState(gameObject.GetInstanceID()
-                       + LudeoWrapper.ABILITY_COOLDOWN, _cooldown);
+        //LudeoManager.SetGameplayState(gameObject.GetInstanceID()
+        //               + LudeoWrapper.ABILITY_COOLDOWN, _cooldown);
     }
 
     public virtual void Use(Transform target)

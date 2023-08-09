@@ -16,16 +16,16 @@ public class ShootProjectile : Ability
         get => _damage; 
         set
         {
-            LudeoManager.SetGameplayState(gameObject.GetInstanceID()
-                               + LudeoWrapper.ABILITY_DAMAGE, value);
+            //LudeoManager.SetGameplayState(gameObject.GetInstanceID()
+            //                   + LudeoWrapper.ABILITY_DAMAGE, value);
             _damage = value;
         }
     }
 
     private void Awake()
     {
-        LudeoManager.SetGameplayState(gameObject.GetInstanceID()
-                               + LudeoWrapper.ABILITY_DAMAGE, _damage);
+        //LudeoManager.SetGameplayState(gameObject.GetInstanceID()
+        //                       + LudeoWrapper.ABILITY_DAMAGE, _damage);
     }
 
     public override void Use(Transform target)

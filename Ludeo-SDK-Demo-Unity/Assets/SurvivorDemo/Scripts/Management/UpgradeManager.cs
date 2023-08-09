@@ -14,11 +14,6 @@ public class UpgradeManager : MonoBehaviour
 
     UIView_UpgradeScreen _runtimeScreen;
 
-    private void Awake()
-    {
-        LudeoManager.SetGameplayState(LudeoWrapper.TIMESCALE, 1);
-    }
-
     public void ShowUpgrades()
     {
         _runtimeScreen = Instantiate(p_UpgradeScreen);
@@ -88,7 +83,6 @@ public class UpgradeManager : MonoBehaviour
                 break;
             case "time":
                 Time.timeScale += upgrade.Value;
-                LudeoManager.SetGameplayState(LudeoWrapper.TIMESCALE, Time.timeScale);
                 break;
             default:
                 throw new InvalidOperationException($"Invalid upgrade key: {upgrade.Key}");

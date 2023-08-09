@@ -107,7 +107,7 @@ public class UIView_ChooseLudeo : MonoBehaviour
         var ludeosPrefs = PlayerPrefs.GetString("Saved_Ludeos");
         var ludeos = JsonConvert.DeserializeObject<string[]>(ludeosPrefs);
 
-        if (ludeos != null)
+        if (ludeos != null && ludeos.Length > 0)
         {
             PreviousLudeos.AddOptions(ludeos.ToList());
             PreviousLudeos.value = ludeos.Length - 1;

@@ -54,7 +54,7 @@ public class GameManager : MonoBehaviour
         );
     }
 
-    private void InitializeLudeo(string guid)
+    private void InitializeLudeoService(string guid)
     {
         _guid = guid;
         UIManager.SetPlayLudeoInteractable(false);
@@ -73,8 +73,26 @@ public class GameManager : MonoBehaviour
 
     private void Update()
     {
-        if (_player == null || _upgradesShowing)
+        if (_player == null || _upgradesShowing || !_ludeoInitialized)
             return;
+
+        LudeoManager.SetGameplayState(LudeoWrapper.WAVE, _level);
+        LudeoManager.SetGameplayState(LudeoWrapper.TIMESCALE, Time.timeScale);
+        LudeoManager.SetGameplayState(LudeoWrapper.PLAYER_POSITION,
+            new Vec3(_player.transform.position.x, _player.transform.position.y, _player.transform.position.z));
+
+        LudeoManager.SetGameplayState(LudeoWrapper.PLAYER_MAXHP, _player.MaxHP);
+        LudeoManager.SetGameplayState(LudeoWrapper.PLAYER_HP, _player.HP);
+        LudeoManager.SetGameplayState(LudeoWrapper.PLAYER_ABILITY_COUNT, _player.Abilities.Count);
+
+        for (int i = 0; i < _player.Abilities.Count; i++)
+        {
+            Ability ability = _player.Abilities[i];
+            LudeoManager.SetGameplayState(i + LudeoWrapper.ABILITY_COOLDOWN, ability.Cooldown);
+            LudeoManager.SetGameplayState(i + LudeoWrapper.ABILITY_DAMAGE, (ability as ShootProjectile).Damage);
+        }
+
+        LudeoManager.SetGameplayState(LudeoWrapper.ENEMY_COUNT, EnemyManager.EnemiesLeft);
 
         if (_player.HP <= 0)
         {
@@ -82,6 +100,10 @@ public class GameManager : MonoBehaviour
             EndGame();
             Debug.Log("Game Over");
             return;
+        }
+        else
+        {
+            LudeoManager.SetGameplayState(LudeoWrapper.PLAYER_DEATH, false);
         }
 
         if (!EnemyManager.AnyEnemyAlive)
@@ -107,12 +129,13 @@ public class GameManager : MonoBehaviour
     {
         if (LudeoWrapper.CanInit)
         {
-            InitializeLudeo(_guid);
+            InitializeLudeoService(_guid);
             yield return new WaitUntil(() => _ludeoInitialized);
         }
-
-        LudeoManager.SetGameplayState(LudeoWrapper.PLAYER_DEATH, false);
-        LudeoManager.SetGameplayState(LudeoWrapper.WAVE, _level);
+        else
+        {
+            Debug.LogError("Cannot init ludeo service.");
+        }
 
         UIManager.GameplayTransition();
 
@@ -120,27 +143,48 @@ public class GameManager : MonoBehaviour
         CameraFollower.Init(_player.transform);
         _level = 1;
 
-        // if playing a ludeo...
         if (!string.IsNullOrEmpty(_guid))
         {
-            InitializeLudeo();
+            InitializeLudeoParameters();
         }
 
         GenerateLevel(_level);
     }
 
-    private void InitializeLudeo()
+    private void InitializeLudeoParameters()
     {
-        LudeoManager.GetGameplayState(LudeoWrapper.WAVE, out _level);
+        LudeoManager.GetGameplayState(LudeoWrapper.WAVE, out int level);
+        _level = level;
+
         var ts = Time.timeScale;
         LudeoManager.GetGameplayState(LudeoWrapper.TIMESCALE, out ts);
+        if (ts == 0)
+            ts = 1;
         Time.timeScale = ts;
+
         LudeoManager.GetGameplayState(LudeoWrapper.PLAYER_POSITION, out Vec3 pos);
         _player.transform.position = new Vector3(pos.x, pos.y, pos.z);
+
         LudeoManager.GetGameplayState(LudeoWrapper.PLAYER_MAXHP, out int maxhp);
         _player.MaxHP = maxhp;
+
         LudeoManager.GetGameplayState(LudeoWrapper.PLAYER_HP, out int hp);
         _player.HP = hp;
+
+        LudeoManager.GetGameplayState(LudeoWrapper.PLAYER_ABILITY_COUNT, out int abilityCount);
+        for (int i = 1; i < abilityCount; i++)
+        {
+            UpgradeManager.ChooseUpgrade(new UpgradeDefinition() { Key = "bullet_count", Value = 1 });
+        }
+
+        for (int i = 0; i < abilityCount; i++)
+        {
+            LudeoManager.GetGameplayState(i + LudeoWrapper.ABILITY_COOLDOWN, out float abilityCooldown);
+            LudeoManager.GetGameplayState(i + LudeoWrapper.ABILITY_DAMAGE, out int abilityDamage);
+
+            _player.Abilities[i].Cooldown = abilityCooldown;
+            (_player.Abilities[i] as ShootProjectile).Damage = abilityDamage;
+        }
     }
 
     private void NextLevel(UpgradeDefinition definition)
@@ -150,7 +194,6 @@ public class GameManager : MonoBehaviour
 
         _upgradesShowing = false;
         _level++;
-        LudeoManager.SetGameplayState(LudeoWrapper.WAVE, _level);
         GenerateLevel(_level);
     }
 

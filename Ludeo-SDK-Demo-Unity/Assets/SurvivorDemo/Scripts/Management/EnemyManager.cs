@@ -93,7 +93,6 @@ public class EnemyManager : MonoBehaviour
 
             enemy.OnDeath += OnEnemyDeath;
             yield return new WaitForSeconds(Random.Range(0f, 0.3f));
-            LudeoManager.SetGameplayState(LudeoWrapper.ENEMY_COUNT, i);
         }
     }
 
