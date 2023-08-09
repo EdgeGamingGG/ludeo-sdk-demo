@@ -18,7 +18,7 @@ public class EnemyManager : MonoBehaviour
     public int EnemyCountForLevel => _enemyCountForLevel;
     private int _enemyCountForLevel;
 
-    private int _enemiesKilledTotal = 0;
+    public int EnemiesKilledTotal = 0;
     private int _enemiesKilledForLevel = 0;
     List<Enemy> _enemies;
     GameObject _enemiesParent;
@@ -27,7 +27,7 @@ public class EnemyManager : MonoBehaviour
     {
         if (level == 0)
         {
-            _enemiesKilledTotal = 0;
+            EnemiesKilledTotal = 0;
         }
 
         _enemiesKilledForLevel = 0;
@@ -98,10 +98,10 @@ public class EnemyManager : MonoBehaviour
 
     private void OnEnemyDeath(Enemy enemy)
     {
-        _enemiesKilledTotal++;
+        EnemiesKilledTotal++;
         _enemiesKilledForLevel++;
         LudeoManager.SetGameplayState(LudeoWrapper.ENEMY_COUNT, EnemiesLeft);
-        LudeoManager.SetGameplayState("NormalKill", _enemiesKilledTotal);
+        LudeoManager.SetGameplayState(LudeoWrapper.NORMAL_KILL, EnemiesKilledTotal);
         _enemies.Remove(enemy);
     }
 

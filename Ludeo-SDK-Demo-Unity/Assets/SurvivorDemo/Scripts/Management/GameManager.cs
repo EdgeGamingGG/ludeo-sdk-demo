@@ -185,6 +185,9 @@ public class GameManager : MonoBehaviour
             _player.Abilities[i].Cooldown = abilityCooldown;
             (_player.Abilities[i] as ShootProjectile).Damage = abilityDamage;
         }
+
+        LudeoManager.GetGameplayState(LudeoWrapper.NORMAL_KILL, out int kills);
+        EnemyManager.EnemiesKilledTotal = kills;
     }
 
     private void NextLevel(UpgradeDefinition definition)

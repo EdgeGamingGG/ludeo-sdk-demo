@@ -9,6 +9,7 @@ public class LudeoWrapper : MonoBehaviour
     public const string WAVE = "Wave";
     public const string TIMESCALE = "TimeScale";
     public const string PLAYER_POSITION = "Player_Position";
+    public const string NORMAL_KILL = "NormalKill";
 
     // Player
     public const string PLAYER_HP = "Player_HP";
