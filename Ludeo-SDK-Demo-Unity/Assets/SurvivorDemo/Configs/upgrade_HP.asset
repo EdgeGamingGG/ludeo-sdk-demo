@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: upgrade_HP
   m_EditorClassIdentifier: 
   Key: hp
-  Value: 5
+  Value: 50
   Name: Incraede Max HP & Heal
   Description: Increases your Max HP
   View: {fileID: 21300000, guid: 07697242653e7c443ad8e47357acb231, type: 3}
