@@ -1,3 +1,4 @@
+using LudeoSDK;
 using System;
 using System.Collections;
 using UnityEngine;
@@ -23,6 +24,7 @@ public class GameManager : MonoBehaviour
     int _level = 1;
     bool _upgradesShowing = false;
     bool _ludeoInitialized = false;
+    private string _guid = null;
 
     private void Awake()
     {
@@ -44,14 +46,20 @@ public class GameManager : MonoBehaviour
         LudeoWrapper.InitDone += FinishedLudeoInit;
 
         UIManager.SetPlayButtonInteractable(LudeoWrapper.CanInit);
+        UIManager.SetPlayLudeo(s =>
+        {
+            _guid = s;
+            StartCoroutine(StartGame());
+        }
+        );
     }
 
-    private void InitiazlizeLudeo()
+    private void InitializeLudeo(string guid)
     {
+        _guid = guid;
+        UIManager.SetPlayLudeoInteractable(false);
         _loading = Instantiate(UIManager.Loading);
-        var guid = "9e954a1a-4e56-4923-9c30-017a56da83ad";
-        guid = null;
-        LudeoWrapper.Init(guid);
+        LudeoWrapper.Init(_guid);
     }
 
     private void FinishedLudeoInit()
@@ -87,7 +95,8 @@ public class GameManager : MonoBehaviour
     {
         UpgradeManager.ResetUpgrades();
         UIManager.MainMenuTransition();
-        LudeoSDK.LudeoManager.SetGameplayState("PlayerDeath", true);
+        LudeoSDK.LudeoManager.SetGameplayState
+            (LudeoWrapper.PLAYER_DEATH, true);
         LudeoSDK.LudeoManager.EndGameplay();
         _level = 1;
         Time.timeScale = 1;
@@ -98,19 +107,36 @@ public class GameManager : MonoBehaviour
     {
         if (LudeoWrapper.CanInit)
         {
-            InitiazlizeLudeo();
+            InitializeLudeo(_guid);
             yield return new WaitUntil(() => _ludeoInitialized);
         }
 
-        LudeoSDK.LudeoManager.SetGameplayState("PlayerDeath", false);
-        
+        LudeoManager.SetGameplayState(LudeoWrapper.PLAYER_DEATH, false);
+        LudeoManager.SetGameplayState(LudeoWrapper.WAVE, _level);
+
         UIManager.GameplayTransition();
-        
-        _level = 1;
-        LudeoSDK.LudeoManager.SetGameplayState(LudeoWrapper.WAVE, _level);
+
         SpawnPlayer();
         CameraFollower.Init(_player.transform);
+        _level = 1;
+
+        // if playing a ludeo...
+        if (!string.IsNullOrEmpty(_guid))
+        {
+            InitializeLudeo();
+        }
+
         GenerateLevel(_level);
+    }
+
+    private void InitializeLudeo()
+    {
+        LudeoManager.GetGameplayState(LudeoWrapper.WAVE, out _level);
+        //var ts = Time.timeScale;
+        //LudeoManager.GetGameplayState(LudeoWrapper.TIMESCALE, out ts);
+        //Time.timeScale = ts;
+        LudeoManager.GetGameplayState(LudeoWrapper.PLAYER_POSITION, out Vec3 pos);
+        _player.transform.position = new Vector3(pos.x, pos.y, pos.z);
     }
 
     private void NextLevel(UpgradeDefinition definition)
@@ -120,7 +146,7 @@ public class GameManager : MonoBehaviour
 
         _upgradesShowing = false;
         _level++;
-        LudeoSDK.LudeoManager.SetGameplayState(LudeoWrapper.WAVE, _level);
+        LudeoManager.SetGameplayState(LudeoWrapper.WAVE, _level);
         GenerateLevel(_level);
     }
 

@@ -13,6 +13,7 @@ public class LudeoWrapper : MonoBehaviour
     // Player
     public const string PLAYER_HP = "Player_HP";
     public const string PLAYER_MAXHP = "Player_MaxHP";
+    public const string PLAYER_DEATH = "Player_Death";
 
     // Abilities
     public const string PLAYER_ABILITY_COUNT = "Player_Ability_Count";
@@ -112,17 +113,13 @@ public class LudeoWrapper : MonoBehaviour
                 break;
             // PLAYER FLOW
             case LudeoFlowState.WaitingForGetGameplayDefinitions:
-
-                LudeoManager.GetGameplayDefinitionsKeys(LudeoParam.Int, out string[] keys);
-                LudeoManager.GetGameplayDefinition("wave", out int value);
-                LudeoManager.GetGameplayDefinition("NormalKill", out int value2);
+                LudeoManager.GetGameplayStateKeys(LudeoParam.Vec3, out string[] keys1);
                 LudeoManager.GetGameplayStateKeys(LudeoParam.Int, out string[] keys2);
                 LudeoManager.GetGameplayStateKeys(LudeoParam.String, out string[] keys3);
                 LudeoManager.GetGameplayStateKeys(LudeoParam.Objects, out string[] keys4);
                 LudeoManager.GetGameplayStateKeys(LudeoParam.Float, out string[] keys5);
-
-                LudeoManager.GetGameplayState("NormalKill", out int value3);
-                LudeoManager.GetGameplayState("wave", out int value4);
+                LudeoManager.GetGameplayStateKeys(LudeoParam.Bool, out string[] keys6);
+                LudeoManager.GetGameplayStateKeys(LudeoParam.Quatern, out string[] keys7);
 
                 LudeoManager.ReadyForGameplay();
 

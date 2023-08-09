@@ -14,8 +14,10 @@ public class UIManager : MonoBehaviour
     [Header("Main")]
     public GameObject MainPanel;
     public GameObject ConfigPanel;
+    public UIView_ChooseLudeo ChooseLudeoPanel;
     public Button Play;
     public Button Config;
+    public Button PlayLudeo;
     public Button ApplyConfig;
     public TMP_InputField SteamIDInput;
     public TMP_Text SteamIDText;
@@ -37,6 +39,7 @@ public class UIManager : MonoBehaviour
         Config.onClick.AddListener(() => ConfigTransition());
         ApplyConfig.onClick.AddListener(() => MainMenuTransition());
         ApplyConfig.onClick.AddListener(() => SetSteamIDText());
+        PlayLudeo.onClick.AddListener(() => ChooseLudeoPanel.gameObject.SetActive(true));
         SetSteamIDText();
     }
 
@@ -50,6 +53,7 @@ public class UIManager : MonoBehaviour
     {
         GameplayPanel.SetActive(false);
         ConfigPanel.SetActive(false);
+        ChooseLudeoPanel.gameObject.SetActive(false);
         MainPanel.SetActive(true);
 
         if (_rerun)
@@ -62,6 +66,7 @@ public class UIManager : MonoBehaviour
     {
         MainPanel.SetActive(false);
         ConfigPanel.SetActive(false);
+        ChooseLudeoPanel.gameObject.SetActive(false);
         GameplayPanel.SetActive(true);
 
         _rerun = true;
@@ -71,6 +76,7 @@ public class UIManager : MonoBehaviour
     {
         MainPanel.SetActive(false);
         ConfigPanel.SetActive(true);
+        ChooseLudeoPanel.gameObject.SetActive(false);
         GameplayPanel.SetActive(false);
 
         SteamIDInput.text = PlayerPrefs.GetString("SteamUserId", "");
@@ -84,6 +90,11 @@ public class UIManager : MonoBehaviour
     public void BindHP(Func<float> bind)
     {
         HealthBar.Bind(bind);
+    }
+
+    public void SetPlayLudeo(Action<string> playLudeo)
+    {
+        ChooseLudeoPanel.Init(playLudeo);
     }
 
     public void SetApplyConfig(Action<string> onClick)
@@ -106,6 +117,11 @@ public class UIManager : MonoBehaviour
     public void SetPlayButtonInteractable(bool interactable)
     {
         Play.interactable = interactable;
+    }
+
+    public void SetPlayLudeoInteractable(bool interactable)
+    {
+        PlayLudeo.interactable = interactable;
     }
 
     private void Update()
