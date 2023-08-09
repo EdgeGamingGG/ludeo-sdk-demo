@@ -53,7 +53,14 @@ public class UpgradeManager : MonoBehaviour
                 FindObjectOfType<Player>().Heal((int)upgrade.Value);
                 break;
             case "damage":
-                FindObjectOfType<ShootProjectile>().Damage += (int)upgrade.Value;
+                var shoots = FindObjectsOfType<ShootProjectile>();
+                var value = upgrade.Value;
+                foreach (var ability in shoots)
+                {
+                    ability.Damage += (int)value;
+                    value--;
+                    value = Mathf.Clamp(value, 1, 1000);
+                }
                 break;
             case "attack_speed":
                 _atkSpeedBoosts *= upgrade.Value;
