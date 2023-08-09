@@ -15,8 +15,8 @@ public class Enemy : MonoBehaviour
     {
         get => _maxHp; set
         {
-            LudeoManager.SetGameplayState(gameObject.GetInstanceID()
-                                              + LudeoWrapper.ENEMY_MAXHP, value);
+            //LudeoManager.SetGameplayState(gameObject.GetInstanceID()
+            //                                  + LudeoWrapper.ENEMY_MAXHP, value);
             _maxHp = value;
             HP = value;
         }
@@ -29,8 +29,8 @@ public class Enemy : MonoBehaviour
         get => damage;
         set
         {
-            LudeoManager.SetGameplayState(gameObject.GetInstanceID()
-                                              + LudeoWrapper.ENEMY_DAMAGE, value);
+            //LudeoManager.SetGameplayState(gameObject.GetInstanceID()
+            //                                  + LudeoWrapper.ENEMY_DAMAGE, value);
             damage = value;
         }
     }
@@ -41,8 +41,8 @@ public class Enemy : MonoBehaviour
     {
         get => _speed; set
         {
-            LudeoManager.SetGameplayState(gameObject.GetInstanceID()
-                                                             + LudeoWrapper.ENEMY_SPEED, value);
+            //LudeoManager.SetGameplayState(gameObject.GetInstanceID()
+            //                                                 + LudeoWrapper.ENEMY_SPEED, value);
             _speed = value;
         }
     }
@@ -71,17 +71,17 @@ public class Enemy : MonoBehaviour
             * Time.deltaTime * Speed, Space.World);
 
         var pos = transform.position;
-        LudeoManager.SetGameplayState(gameObject.GetInstanceID()
-                                  + LudeoWrapper.ENEMY_POSITION,
-                                  new Vec3(pos.x, pos.y, pos.z));
+        //LudeoManager.SetGameplayState(gameObject.GetInstanceID()
+        //                          + LudeoWrapper.ENEMY_POSITION,
+                                  //new Vec3(pos.x, pos.y, pos.z));
     }
 
     bool _dead = false;
     public void TakeDamage(int damage)
     {
         HP -= damage;
-        LudeoManager.SetGameplayState(gameObject.GetInstanceID()
-                       + LudeoWrapper.ENEMY_HP, HP < 0 ? 0 : HP);
+        //LudeoManager.SetGameplayState(gameObject.GetInstanceID()
+        //               + LudeoWrapper.ENEMY_HP, HP < 0 ? 0 : HP);
         if (HP <= 0)
         {
             HP = 0;

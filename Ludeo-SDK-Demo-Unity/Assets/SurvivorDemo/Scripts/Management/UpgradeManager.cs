@@ -14,6 +14,11 @@ public class UpgradeManager : MonoBehaviour
 
     UIView_UpgradeScreen _runtimeScreen;
 
+    private void Awake()
+    {
+        LudeoManager.SetGameplayState(LudeoWrapper.TIMESCALE, 1);
+    }
+
     public void ShowUpgrades()
     {
         _runtimeScreen = Instantiate(p_UpgradeScreen);

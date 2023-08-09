@@ -22,6 +22,12 @@ public abstract class Ability : MonoBehaviour
 
     private float _lastTimeAbiltyUsed = 0f;
 
+    private void Awake()
+    {
+        LudeoManager.SetGameplayState(gameObject.GetInstanceID()
+                       + LudeoWrapper.ABILITY_COOLDOWN, _cooldown);
+    }
+
     public virtual void Use(Transform target)
     {
         if (CanUse)

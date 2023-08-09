@@ -110,6 +110,7 @@ public class UIView_ChooseLudeo : MonoBehaviour
         if (ludeos != null)
         {
             PreviousLudeos.AddOptions(ludeos.ToList());
+            PreviousLudeos.value = ludeos.Length - 1;
             LudeoGUID.text = ludeos[ludeos.Length-1];
         }
     }

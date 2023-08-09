@@ -17,7 +17,7 @@ public class Player : MonoBehaviour
         }
     }
     [field: SerializeField]
-    public int HP { get; private set; } = 100;
+    public int HP { get; set; } = 100;
 
     public List<Ability> Abilities;
     private EnemyManager _enemyManager;
@@ -29,7 +29,6 @@ public class Player : MonoBehaviour
         LudeoManager.SetGameplayState(LudeoWrapper.PLAYER_MAXHP, MaxHP);
         LudeoManager.SetGameplayState(LudeoWrapper.PLAYER_ABILITY_COUNT, 1);
         LudeoManager.SetGameplayState(LudeoWrapper.PLAYER_HP, HP);
-
     }
 
     public void Init(EnemyManager enemyManager)

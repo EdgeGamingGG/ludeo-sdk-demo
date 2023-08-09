@@ -132,11 +132,15 @@ public class GameManager : MonoBehaviour
     private void InitializeLudeo()
     {
         LudeoManager.GetGameplayState(LudeoWrapper.WAVE, out _level);
-        //var ts = Time.timeScale;
-        //LudeoManager.GetGameplayState(LudeoWrapper.TIMESCALE, out ts);
-        //Time.timeScale = ts;
+        var ts = Time.timeScale;
+        LudeoManager.GetGameplayState(LudeoWrapper.TIMESCALE, out ts);
+        Time.timeScale = ts;
         LudeoManager.GetGameplayState(LudeoWrapper.PLAYER_POSITION, out Vec3 pos);
         _player.transform.position = new Vector3(pos.x, pos.y, pos.z);
+        LudeoManager.GetGameplayState(LudeoWrapper.PLAYER_MAXHP, out int maxhp);
+        _player.MaxHP = maxhp;
+        LudeoManager.GetGameplayState(LudeoWrapper.PLAYER_HP, out int hp);
+        _player.HP = hp;
     }
 
     private void NextLevel(UpgradeDefinition definition)

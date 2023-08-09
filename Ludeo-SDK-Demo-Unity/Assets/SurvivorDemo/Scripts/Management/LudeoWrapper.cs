@@ -13,7 +13,7 @@ public class LudeoWrapper : MonoBehaviour
     // Player
     public const string PLAYER_HP = "Player_HP";
     public const string PLAYER_MAXHP = "Player_MaxHP";
-    public const string PLAYER_DEATH = "Player_Death";
+    public const string PLAYER_DEATH = "PlayerDeath";
 
     // Abilities
     public const string PLAYER_ABILITY_COUNT = "Player_Ability_Count";

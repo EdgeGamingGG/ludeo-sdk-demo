@@ -1,3 +1,4 @@
+using cohtml.Net;
 using LudeoSDK;
 using System.Collections;
 using System.Collections.Generic;
@@ -19,6 +20,12 @@ public class ShootProjectile : Ability
                                + LudeoWrapper.ABILITY_DAMAGE, value);
             _damage = value;
         }
+    }
+
+    private void Awake()
+    {
+        LudeoManager.SetGameplayState(gameObject.GetInstanceID()
+                               + LudeoWrapper.ABILITY_DAMAGE, _damage);
     }
 
     public override void Use(Transform target)
