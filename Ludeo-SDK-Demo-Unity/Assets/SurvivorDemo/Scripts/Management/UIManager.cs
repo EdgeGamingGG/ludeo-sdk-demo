@@ -21,6 +21,7 @@ public class UIManager : MonoBehaviour
     public Button PlayLudeo;
     public Button ApplyConfig;
     public Button ExitButton;
+    public Button ExitGameplayButton;
     public TMP_InputField SteamIDInput;
     public TMP_Text SteamIDText;
 
@@ -107,6 +108,11 @@ public class UIManager : MonoBehaviour
     {
         ApplyConfig.onClick.RemoveAllListeners();
         ApplyConfig.onClick.AddListener(() => onClick(SteamIDInput.text));
+    }
+
+    public void SetExitGameplayButton(Action callback)
+    {
+        ExitGameplayButton.onClick.AddListener(() => callback());
     }
 
     public void SetLudeoHighlightOnClick(Action onclick)

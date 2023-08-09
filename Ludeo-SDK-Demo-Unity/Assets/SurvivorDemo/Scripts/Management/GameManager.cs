@@ -28,6 +28,7 @@ public class GameManager : MonoBehaviour
 
     private void Awake()
     {
+        UIManager.SetExitGameplayButton(EndGame);
         UIManager.SetLudeoHighlightOnClick(() =>
         {
             var ok = LudeoSDK.LudeoManager.MarkHighlight();
