@@ -61,7 +61,15 @@ public class GameManager : MonoBehaviour
             StartCoroutine(StartGame());
         });
 
-        LudeoWrapper.ReplayLudeo += () => StartCoroutine(StartGame());
+        LudeoWrapper.ReplayLudeo += () =>
+        {
+            EndGame(false);
+            UIManager.SetPlayButtonInteractable(false);
+        };
+        LudeoWrapper.ReplayButtonClicked += () =>
+        {
+            StartCoroutine(StartGame());
+        };
     }
 
     private void OnApplicationQuit()
@@ -130,7 +138,7 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    private void EndGame()
+    private void EndGame(bool abort = true)
     {
         UpgradeManager.ResetUpgrades();
         UIManager.MainMenuTransition();
@@ -139,12 +147,13 @@ public class GameManager : MonoBehaviour
             (LudeoWrapper.PLAYER_DEATH, true);
         LudeoManager.EndGameplay();
 
-        if (IsLudeo)
+        if (IsLudeo && abort)
             LudeoManager.AbortGameplay();
 
         _level = 1;
         Time.timeScale = 1;
-        Destroy(_player.gameObject);
+        if (_player != null)
+            Destroy(_player.gameObject);
     }
 
     public IEnumerator StartGame()
@@ -154,7 +163,7 @@ public class GameManager : MonoBehaviour
             InitializeLudeoService(_guid);
             yield return new WaitUntil(() => _ludeoInitialized);
         }
-        else
+        else if (!_ludeoInitialized)
         {
             Debug.LogError("Cannot init ludeo service.");
         }
@@ -167,10 +176,8 @@ public class GameManager : MonoBehaviour
         CameraFollower.Init(_player.transform);
         _level = 1;
 
-        if (!string.IsNullOrEmpty(_guid))
-        {
+        if (IsLudeo)
             InitializeLudeoParameters();
-        }
 
         GenerateLevel(_level);
     }

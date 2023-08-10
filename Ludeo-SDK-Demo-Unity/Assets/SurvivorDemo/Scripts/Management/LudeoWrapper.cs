@@ -49,6 +49,8 @@ public class LudeoWrapper : MonoBehaviour
     public string APIKey;
 
     public event Action InitDone;
+    public event Action ReplayButtonClicked;
+    public event Action ReplayLudeo;
 
     public bool CanInit
     {
@@ -83,7 +85,7 @@ public class LudeoWrapper : MonoBehaviour
     }
 
     bool _replayLudeo = false;
-    public event Action ReplayLudeo;
+    bool _userInteraction = true;
     private void OnLudeoFlowState(LudeoFlowState ludeoFlowState, object data)
     {
         print("<color=red>" + ludeoFlowState.ToString() + "</color>");
@@ -149,6 +151,11 @@ public class LudeoWrapper : MonoBehaviour
 
                 break;
             case LudeoFlowState.WaitingForUserInteraction:
+                if (_userInteraction && _replayLudeo)
+                {
+                    _userInteraction = false;
+                    ReplayLudeo?.Invoke();
+                }
                 break;
             case LudeoFlowState.GameplayOn:
                 break;
@@ -156,9 +163,10 @@ public class LudeoWrapper : MonoBehaviour
                 if (_isLudeo)
                 {
                     if (_replayLudeo)
-                        ReplayLudeo?.Invoke();
-
+                        ReplayButtonClicked?.Invoke();
+                    
                     _isInitialized = true;
+                    _userInteraction = true;
 
                     _replayLudeo = true;
                 }
