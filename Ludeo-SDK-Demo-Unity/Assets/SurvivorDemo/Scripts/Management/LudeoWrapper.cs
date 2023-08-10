@@ -118,7 +118,6 @@ public class LudeoWrapper : MonoBehaviour
 
                 LudeoManager.SetGameplayDefinitions(definitions);
 
-                InitDone?.Invoke();
                 break;
             case LudeoFlowState.Error:
                 Debug.LogError($"Unhandled {ludeoFlowState}");
@@ -160,10 +159,11 @@ public class LudeoWrapper : MonoBehaviour
                         ReplayLudeo?.Invoke();
 
                     _isInitialized = true;
-                    InitDone?.Invoke();
 
                     _replayLudeo = true;
                 }
+
+                InitDone?.Invoke();
                 break;
             default:
                 Debug.LogError($"Unhandled {ludeoFlowState}");
