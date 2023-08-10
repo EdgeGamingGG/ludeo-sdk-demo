@@ -31,6 +31,8 @@ public class LudeoWrapper : MonoBehaviour
 
     public UIView_Logger EditorLog;
 
+    private bool _isLudeo = false;
+
     [SerializeField]
     private string _steamUserId;
     public string SteamUserId
@@ -95,9 +97,16 @@ public class LudeoWrapper : MonoBehaviour
                 break;
             case LudeoFlowState.WaitingForLoadGameplayData:
                 if (string.IsNullOrEmpty(_guid))
+                {
                     msg = LudeoManager.LoadGameplayData();
+                    _isLudeo = false;
+                }
                 else
+                {
                     msg = LudeoManager.LoadGameplayData(new Guid(_guid));
+                    _isLudeo = true;
+                }
+
                 break;
             case LudeoFlowState.WaitingForReadyForGameplay:
                 LudeoManager.ReadyForGameplay();
@@ -108,8 +117,6 @@ public class LudeoWrapper : MonoBehaviour
                 LudeoManager.SetGameplayDefinitions(definitions);
 
                 InitDone?.Invoke();
-                break;
-            case LudeoFlowState.WaitingForGameplayBegin:
                 break;
             case LudeoFlowState.Error:
                 Debug.LogError($"Unhandled {ludeoFlowState}");
@@ -141,8 +148,13 @@ public class LudeoWrapper : MonoBehaviour
 
                 break;
             case LudeoFlowState.GameplayOn:
-                _isInitialized = true;
-                InitDone?.Invoke();
+                break;
+            case LudeoFlowState.WaitingForGameplayBegin:
+                if (_isLudeo)
+                {
+                    _isInitialized = true;
+                    InitDone?.Invoke();
+                }
                 break;
             default:
                 Debug.LogError($"Unhandled {ludeoFlowState}");
