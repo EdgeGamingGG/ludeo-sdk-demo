@@ -32,8 +32,6 @@ public class GameManager : MonoBehaviour
         UIManager.SetExitGameplayButton(() =>
         {
             EndGame();
-            if (IsLudeo)
-                LudeoManager.AbortGameplay();
         });
         UIManager.SetLudeoHighlightOnClick(() =>
         {
@@ -134,9 +132,14 @@ public class GameManager : MonoBehaviour
     {
         UpgradeManager.ResetUpgrades();
         UIManager.MainMenuTransition();
+
         LudeoManager.SetGameplayState
             (LudeoWrapper.PLAYER_DEATH, true);
         LudeoManager.EndGameplay();
+
+        if (IsLudeo)
+            LudeoManager.AbortGameplay();
+
         _level = 1;
         Time.timeScale = 1;
         Destroy(_player.gameObject);
