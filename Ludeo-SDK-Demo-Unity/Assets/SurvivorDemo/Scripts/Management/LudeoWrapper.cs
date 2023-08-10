@@ -82,6 +82,8 @@ public class LudeoWrapper : MonoBehaviour
         _isInitialized = true;
     }
 
+    bool _replayLudeo = false;
+    public event Action ReplayLudeo;
     private void OnLudeoFlowState(LudeoFlowState ludeoFlowState, object data)
     {
         print("<color=red>" + ludeoFlowState.ToString() + "</color>");
@@ -90,12 +92,12 @@ public class LudeoWrapper : MonoBehaviour
         switch (ludeoFlowState)
         {
             case LudeoFlowState.GameplayAborted:
-            case LudeoFlowState.WaitingForUserInteraction:
             case LudeoFlowState.LoadingGameplayData:
             case LudeoFlowState.NewLudeoSelected:
             case LudeoFlowState.Initialization:
                 break;
             case LudeoFlowState.WaitingForLoadGameplayData:
+                _replayLudeo = false;
                 if (string.IsNullOrEmpty(_guid))
                 {
                     msg = LudeoManager.LoadGameplayData();
@@ -147,13 +149,20 @@ public class LudeoWrapper : MonoBehaviour
                 LudeoManager.ReadyForGameplay();
 
                 break;
+            case LudeoFlowState.WaitingForUserInteraction:
+                break;
             case LudeoFlowState.GameplayOn:
                 break;
             case LudeoFlowState.WaitingForGameplayBegin:
                 if (_isLudeo)
                 {
+                    if (_replayLudeo)
+                        ReplayLudeo?.Invoke();
+
                     _isInitialized = true;
                     InitDone?.Invoke();
+
+                    _replayLudeo = true;
                 }
                 break;
             default:

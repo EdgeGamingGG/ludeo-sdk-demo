@@ -59,9 +59,11 @@ public class GameManager : MonoBehaviour
         {
             _guid = s;
             StartCoroutine(StartGame());
-        }
-        );
+        });
+
+        LudeoWrapper.ReplayLudeo += () => StartCoroutine(StartGame());
     }
+
     private void OnApplicationQuit()
     {
         if (IsLudeo)
