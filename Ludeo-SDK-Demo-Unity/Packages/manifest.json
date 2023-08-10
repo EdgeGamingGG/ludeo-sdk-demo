@@ -1,7 +1,7 @@
 {
   "dependencies": {
-    "com.coherent-labs.cohtml": "file:C:/Users/ageso/Downloads/Release_LudeoSDK_Unity_v3.2.0_65/Coherent",
-    "com.ludeo.sdk": "file:C:/Users/ageso/Downloads/Release_LudeoSDK_Unity_v3.2.0_65/com.ludeo.sdk@3.2.0",
+    "com.coherent-labs.cohtml": "file:../../../Release_LudeoSDK_Unity_v3.2.0_65/Coherent",
+    "com.ludeo.sdk": "file:../../../Release_LudeoSDK_Unity_v3.2.0_65/com.ludeo.sdk@3.2.0",
     "com.unity.collab-proxy": "1.14.18",
     "com.unity.ide.rider": "1.2.1",
     "com.unity.ide.visualstudio": "2.0.15",
