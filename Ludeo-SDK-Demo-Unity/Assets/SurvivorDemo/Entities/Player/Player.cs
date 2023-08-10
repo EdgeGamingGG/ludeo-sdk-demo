@@ -47,7 +47,30 @@ public class Player : MonoBehaviour
             transform.position += Vector3.right * horizonatal * Time.deltaTime * Speed;
         }
 
+
         _memo.Clear();
+#if UNITY_EDITOR
+        if (Input.GetMouseButtonDown(0))
+        {
+            var enemyManager = FindObjectOfType<EnemyManager>();
+            var ability = Abilities[0];
+            var temp = ability.Cooldown;
+            ability.Cooldown = 0f;
+
+            for (int i = 0; i < enemyManager.EnemiesLeft; i++)
+            {
+                var enemy = enemyManager.GetClosestEnemyTo(transform.position, _memo);
+                if (enemy != null)
+                {
+                    _memo.Add(enemy.transform);
+                    ability.Use(enemy.transform);
+                }
+            }
+
+            ability.Cooldown = temp;
+        }
+#endif
+
         foreach (var ability in Abilities)
         {
             var enemy = _enemyManager.GetClosestEnemyTo(transform.position, _memo);
