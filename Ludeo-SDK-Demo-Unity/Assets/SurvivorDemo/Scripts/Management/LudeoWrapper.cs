@@ -35,7 +35,7 @@ public class LudeoWrapper : MonoBehaviour
     private string _steamUserId;
     public string SteamUserId
     {
-        get => _steamUserId; 
+        get => _steamUserId;
         set
         {
             _steamUserId = value;
@@ -48,9 +48,9 @@ public class LudeoWrapper : MonoBehaviour
 
     public event Action InitDone;
 
-    public bool CanInit 
-    { 
-        get 
+    public bool CanInit
+    {
+        get
         {
             if (_isInitialized)
                 return false;
@@ -65,7 +65,7 @@ public class LudeoWrapper : MonoBehaviour
                 return true;
 
             return false;
-        } 
+        }
     }
 
     bool _isInitialized = false;
@@ -87,6 +87,7 @@ public class LudeoWrapper : MonoBehaviour
 
         switch (ludeoFlowState)
         {
+            case LudeoFlowState.GameplayAborted:
             case LudeoFlowState.WaitingForUserInteraction:
             case LudeoFlowState.LoadingGameplayData:
             case LudeoFlowState.NewLudeoSelected:
@@ -99,7 +100,7 @@ public class LudeoWrapper : MonoBehaviour
                     msg = LudeoManager.LoadGameplayData(new Guid(_guid));
                 break;
             case LudeoFlowState.WaitingForReadyForGameplay:
-                LudeoSDK.LudeoManager.ReadyForGameplay();
+                LudeoManager.ReadyForGameplay();
                 break;
             case LudeoFlowState.WaitingForSetGameplayDefinitions:
                 var definitions = new GameplayDefinitions();
@@ -109,7 +110,6 @@ public class LudeoWrapper : MonoBehaviour
                 InitDone?.Invoke();
                 break;
             case LudeoFlowState.WaitingForGameplayBegin:
-                LudeoManager.BeginGameplay();
                 break;
             case LudeoFlowState.Error:
                 Debug.LogError($"Unhandled {ludeoFlowState}");
@@ -118,7 +118,7 @@ public class LudeoWrapper : MonoBehaviour
 
             // PLAYER FLOW
             case LudeoFlowState.WaitingForGetGameplayDefinitions:
-                
+
                 LudeoManager.GetGameplayDefinitionsKeys(LudeoParam.Int, out string[] def1);
 
                 LudeoManager.GetGameplayStateKeys(LudeoParam.Vec3, out string[] keys1);
@@ -138,7 +138,7 @@ public class LudeoWrapper : MonoBehaviour
                 LogKeys(keys7);
 
                 LudeoManager.ReadyForGameplay();
-                 
+
                 break;
             case LudeoFlowState.GameplayOn:
                 _isInitialized = true;

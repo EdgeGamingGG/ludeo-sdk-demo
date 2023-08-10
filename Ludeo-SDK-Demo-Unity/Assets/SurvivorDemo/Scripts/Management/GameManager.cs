@@ -25,10 +25,16 @@ public class GameManager : MonoBehaviour
     bool _upgradesShowing = false;
     bool _ludeoInitialized = false;
     private string _guid = null;
+    public bool IsLudeo => string.IsNullOrEmpty(_guid) == false;
 
     private void Awake()
     {
-        UIManager.SetExitGameplayButton(EndGame);
+        UIManager.SetExitGameplayButton(() =>
+        {
+            EndGame();
+            if (IsLudeo)
+                LudeoManager.AbortGameplay();
+        });
         UIManager.SetLudeoHighlightOnClick(() =>
         {
             var ok = LudeoSDK.LudeoManager.MarkHighlight();
@@ -57,6 +63,11 @@ public class GameManager : MonoBehaviour
             StartCoroutine(StartGame());
         }
         );
+    }
+    private void OnApplicationQuit()
+    {
+        if (IsLudeo)
+            LudeoManager.AbortGameplay();
     }
 
     private void InitializeLudeoService(string guid)
@@ -114,6 +125,7 @@ public class GameManager : MonoBehaviour
         if (!EnemyManager.AnyEnemyAlive)
         {
             _upgradesShowing = true;
+            LudeoManager.PauseGameplay();
             UpgradeManager.ShowUpgrades();
         }
     }
@@ -122,9 +134,9 @@ public class GameManager : MonoBehaviour
     {
         UpgradeManager.ResetUpgrades();
         UIManager.MainMenuTransition();
-        LudeoSDK.LudeoManager.SetGameplayState
+        LudeoManager.SetGameplayState
             (LudeoWrapper.PLAYER_DEATH, true);
-        LudeoSDK.LudeoManager.EndGameplay();
+        LudeoManager.EndGameplay();
         _level = 1;
         Time.timeScale = 1;
         Destroy(_player.gameObject);
@@ -141,6 +153,8 @@ public class GameManager : MonoBehaviour
         {
             Debug.LogError("Cannot init ludeo service.");
         }
+
+        LudeoManager.BeginGameplay();
 
         UIManager.GameplayTransition();
 
@@ -204,6 +218,7 @@ public class GameManager : MonoBehaviour
         if (EnemyManager.AnyEnemyAlive)
             return;
 
+        LudeoManager.ResumeGameplay();
         _upgradesShowing = false;
         _level++;
         GenerateLevel(_level);

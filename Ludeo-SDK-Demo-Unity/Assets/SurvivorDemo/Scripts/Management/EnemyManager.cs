@@ -45,6 +45,9 @@ public class EnemyManager : MonoBehaviour
 
         for (int i = 0; i < _enemyCountForLevel; i++)
         {
+            if (target == null)
+                break;
+
             var enemy = Instantiate(p_Enemy, _enemiesParent.transform);
             const float size = 5f;
             var position = target.position + new Vector3(
