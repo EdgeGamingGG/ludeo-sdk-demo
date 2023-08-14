@@ -13,6 +13,11 @@ public class LudeoFacade
     public CreatorFlow Creator { get; private set; }
     public PlayerFlow Player { get; private set; }
 
+    public LudeoFacade()
+    {
+        LudeoHelpers.SetLogLevel(LudeoLogLevel.Error);
+    }
+
     public async Task InitializeWithSteam(string userId, string apiKey)
     {
         if (string.IsNullOrEmpty(userId))
@@ -24,8 +29,10 @@ public class LudeoFacade
 
         LudeoManager.Init(userId, LudeoLauncher.Steam, apiKey, OnLudeoFlowState);
 
-        while (!IsInitialized)
-            await Task.Yield();
+        await AwaitState(LudeoFlowState.WaitingForLoadGameplayData);
+
+        IsInitialized = true;
+        LudeoHelpers.SetLogLevel(LudeoLogLevel.Error);
 
         Creator = new CreatorFlow(this);
         Player = new PlayerFlow(this);
@@ -38,11 +45,11 @@ public class LudeoFacade
             case bool b:
                 LudeoManager.SetGameplayState(key, b);
                 break;
-            case float f:
-                LudeoManager.SetGameplayState(key, f);
-                break;
             case int i:
                 LudeoManager.SetGameplayState(key, i);
+                break;
+            case float f:
+                LudeoManager.SetGameplayState(key, f);
                 break;
             case Quaternion q:
                 LudeoManager.SetGameplayState(key, new Quatern(q.x, q.y, q.z, q.w));
@@ -63,7 +70,6 @@ public class LudeoFacade
         switch (ludeoFlowState)
         {
             case LudeoFlowState.Initialization:
-                IsInitialized = true;
                 break;
             case LudeoFlowState.NewLudeoSelected:
                 if (!IsInitialized)
@@ -71,9 +77,11 @@ public class LudeoFacade
                     // TODO: Play ludeo automatically
                 }
                 break;
+            case LudeoFlowState.GameplayAborted:
+                Player.IsRunningLudeo = false;
+                break;
         }
     }
-
 
     private async Task AwaitState(LudeoFlowState state)
     {
@@ -88,7 +96,6 @@ public class LudeoFacade
             Debug.LogError(msg);
         }
     }
-
 
     public class CreatorFlow
     {
@@ -137,6 +144,8 @@ public class LudeoFacade
             msg = LudeoManager.BeginGameplay();
             _ludeoFacade.DebugMessage(msg);
 
+            await _ludeoFacade.AwaitState(LudeoFlowState.GameplayOn);
+
             IsRunningGameplay = true;
         }
 
@@ -146,9 +155,10 @@ public class LudeoFacade
 
         public void ResumeGameplay() => TryRunGameplayFunctionality(LudeoManager.ResumeGameplay);
 
-        public void EndGameplay()
+        public async Task EndGameplay()
         {
             TryRunGameplayFunctionality(LudeoManager.EndGameplay);
+            await _ludeoFacade.AwaitState(LudeoFlowState.WaitingForLoadGameplayData);
             IsRunningGameplay = false;
         }
 
@@ -176,7 +186,9 @@ public class LudeoFacade
     // TODO: Replay Ludeo
     public class PlayerFlow
     {
-        public bool IsRunningLudeo { get; private set; } = false;
+        public bool IsRunningLudeo { get; internal set; } = false;
+
+        public event Action RestartRequested;
 
         public IReadOnlyDictionary<string, object> GameState;
 
@@ -220,9 +232,13 @@ public class LudeoFacade
 
             GameState = vars.Concat(defs).ToDictionary(x => x.Key, x => x.Value);
 
-            await _ludeoFacade.AwaitState(LudeoFlowState.WaitingForReadyForGameplay);
+            await RunLudeo();
+        }
 
-            msg = LudeoManager.ReadyForGameplay();
+        private async Task RunLudeo()
+        {
+            var msg = LudeoManager.ReadyForGameplay();
+
             _ludeoFacade.DebugMessage(msg);
 
             await _ludeoFacade.AwaitState(LudeoFlowState.WaitingForGameplayBegin);
@@ -231,7 +247,22 @@ public class LudeoFacade
             _ludeoFacade.DebugMessage(msg);
 
             IsRunningLudeo = true;
-            return;
+
+            CheckRestart();
+        }
+
+        private async Task CheckRestart()
+        {
+            while (IsRunningLudeo && _ludeoFacade.CurrentFlowState != LudeoFlowState.WaitingForGetGameplayDefinitions)
+                await Task.Yield();
+
+            OnRestart();
+        }
+
+        private void OnRestart()
+        {
+            RunLudeo();
+            RestartRequested?.Invoke();
         }
 
         public void EndGameplay()
