@@ -1,0 +1,128 @@
+/*
+This file is part of Renoir, a modern graphics library.
+
+Copyright (c) 2012-2016 Coherent Labs AD and/or its licensors. All
+rights reserved in all media.
+
+The coded instructions, statements, computer programs, and/or related
+material (collectively the "Data") in these files contain confidential
+and unpublished information proprietary Coherent Labs and/or its
+licensors, which is protected by United States of America federal
+copyright law and by international treaties.
+
+This software or source code is supplied under the terms of a license
+agreement and nondisclosure agreement with Coherent Labs AD and may
+not be copied, disclosed, or exploited except in accordance with the
+terms of that agreement. The Data may not be disclosed or distributed to
+third parties, in whole or in part, without the prior written consent of
+Coherent Labs AD.
+
+COHERENT LABS MAKES NO REPRESENTATION ABOUT THE SUITABILITY OF THIS
+SOURCE CODE FOR ANY PURPOSE. THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT
+HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES,
+INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF
+MERCHANTABILITY, NONINFRINGEMENT, AND FITNESS FOR A PARTICULAR PURPOSE
+ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER, ITS AFFILIATES,
+PARENT COMPANIES, LICENSORS, SUPPLIERS, OR CONTRIBUTORS BE LIABLE FOR
+ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS
+OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
+HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT,
+STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN
+ANY WAY OUT OF THE USE OR PERFORMANCE OF THIS SOFTWARE OR SOURCE CODE,
+EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+*/
+#ifndef COH_COMMON_PS_GUARD
+#define COH_COMMON_PS_GUARD
+#include "CohPlatform.ihlsl"
+
+#if defined(__UE4__) && COH_IS_CROSSCOMPILING
+	Texture2D txBuffer;
+	SamplerState txBufferSampler;
+	Texture2D txBuffer1;
+	SamplerState txBuffer1Sampler;
+	Texture2D txBuffer2;
+	SamplerState txBuffer2Sampler;
+	Texture2D txBuffer3;
+	SamplerState txBuffer3Sampler;
+	Texture2D txBuffer4;
+	SamplerState txBuffer4Sampler;
+
+#elif !defined(__DX9__)
+	Texture2D txBuffer : register(t0);
+	Texture2D txBuffer1 : register(t1);
+	Texture2D txBuffer2 : register(t2);
+	Texture2D txBuffer3 : register(t3);
+	Texture2D txBuffer4 : register(t4);
+
+#if defined(__UNITY__)
+	// Unity has a convention for matching sampler state and textures;
+	// because of that, every sampler state should start with "sampler"
+	// the sampler properties are set through Unity's Texture API
+	SamplerState samplertxBuffer : register(s0);
+	SamplerState samplertxBuffer1 : register(s1);
+	SamplerState samplertxBuffer2 : register(s2);
+	SamplerState samplertxBuffer3 : register(s3);
+	SamplerState samplertxBuffer4 : register(s4);
+#else
+	SamplerState txBufferSampler : register(s0);
+#endif
+
+#else
+	Texture2D txBufferR : register(t0);
+	SamplerState txBuffer : register(s0);
+	Texture2D txBuffer1R : register(t1);
+	SamplerState txBuffer1 : register(s1);
+	Texture2D txBuffer2R : register(t2);
+	SamplerState txBuffer2 : register(s2);
+	Texture2D txBuffer3R : register(t3);
+	SamplerState txBuffer3 : register(s3);
+	Texture2D txBuffer4R : register(t4);
+	SamplerState txBuffer4 : register(s4);
+#endif
+
+
+BEGIN_DEFINE_CBUFFER(GlobalDataPS,REGISTER_BUFFER(b0))
+	float2 ViewportSize REGISTER(c0);
+	float2 ClipMaskViewportSize REGISTER(c1);
+END_DEFINE_CBUFFER
+
+BEGIN_DEFINE_CBUFFER(StandardPrimitivePS, REGISTER_BUFFER(b1))
+	// On Standard:
+	// 0 -> rect
+	// 1 -> circle
+	// 2 -> DrawImage
+	// On Text:
+	// 0 -> raster glyphs
+	// 1 -> sdf glyphs
+	int ShaderType REGISTER(c2);
+	int ShouldClip REGISTER(c3);
+	float2 ClipMaskOrigin REGISTER(c4);
+END_DEFINE_CBUFFER
+
+
+BEGIN_DEFINE_CBUFFER(StandardPrimitiveAdditionalPS, REGISTER_BUFFER(b2))
+	// On Text:
+	// x - glyphFactor, y - glyph size, z - stroke width
+	// On Blur:
+	// x - steps count
+	// On Path:
+	// xyzw - color
+	float4 PrimProps0 REGISTER(c5);
+	// On Text:
+	// Stroke color
+	float4 PrimProps1 REGISTER(c6);
+END_DEFINE_CBUFFER
+
+BEGIN_DEFINE_CBUFFER(EffectsPS, REGISTER_BUFFER(b3))
+	float4 Coefficients[3] REGISTER(c7); // Up-to 9 coeffs actually
+	float4 PixelOffsets[6] REGISTER(c10); // Up-to 9 * float2 offsets actually
+END_DEFINE_CBUFFER
+
+BEGIN_DEFINE_CBUFFER(RenoirShaderParamsPS, REGISTER_BUFFER(b4))
+	float4 GradientStartColor REGISTER(c16);
+	float4 GradientMidColor REGISTER(c17);
+	float4 GradientEndColor REGISTER(c18);
+	float GradientYCoord REGISTER(c19);
+END_DEFINE_CBUFFER
+#endif // COH_COMMON_PS_GUARD

@@ -1,0 +1,389 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>LudeoSDK</name>
+    </assembly>
+    <members>
+        <member name="T:LudeoSDK.DataConverter">
+            <summary>
+            Convert the data to json format, data that represents a Ludeo content
+            </summary>
+        </member>
+        <member name="T:LudeoSDK.LudeoHelpers">
+            <summary>
+            Contains support methods for the LudeoSDK integration.  
+            </summary>
+        </member>
+        <member name="M:LudeoSDK.LudeoHelpers.GetServiceUrl">
+            <summary>
+            Get the Ludeo platform URL towards which the SDK directs.
+            </summary>
+            <returns>The Ludeo platform URL.</returns>
+            <example>
+            \include ExampleGetServiceUrl.cs
+            </example>
+        </member>
+        <member name="M:LudeoSDK.LudeoHelpers.SetLogLevel(LudeoSDK.LudeoLogLevel)">
+            <summary>
+            Set the LogLevel you wish Ludeo to output.
+            </summary>
+            <param name="logLevel">Required LogLevel of LudeoSDK.</param>
+            <returns>True if LogLevel was set successfully.</returns>
+            <example>
+            \include ExampleSetLogLevel.cs
+            </example>
+        </member>
+        <member name="T:LudeoSDK.LudeoManager">
+            <summary>
+            Enables Creating and Playing Ludeos in your game
+            </summary>
+        </member>
+        <member name="M:LudeoSDK.LudeoManager.Init(System.String,LudeoSDK.LudeoLauncher,System.String,LudeoSDK.CallbackWithLudeoFlowState)">
+            <summary>
+            Calling this once at runtime will initialize LudeoSDK in your game.
+            </summary>
+            <param name="launcherUserID">The user ID as received by the launcher.</param>
+            <param name="launcher">Platform, such as Steam or Origin, that the game was launched from.</param>
+            <param name="apiKey">The key to authenticate the client with the server.</param>
+            <param name="ludeoHandler">The handler to call on Ludeo events.</param>
+            <returns>LudeoMessage.Success or other LudeoMessage to state failure types.</returns>
+            <example>
+            \include ExampleInit.cs
+            </example>
+        </member>
+        <member name="M:LudeoSDK.LudeoManager.LoadGameplayData">
+            <summary>
+            For Creator Flow: Fetch and load any Gameplay data needed for a Gameplay as a Creator
+            Switches LudeoSDK to to LudeoGameplayType.InGame
+            </summary>
+            <returns>LudeoMessage.Success if call is successful</returns>
+            <example>
+            \include ExampleLoadGameplayData.cs
+            </example>
+        </member>
+        <member name="M:LudeoSDK.LudeoManager.LoadGameplayData(System.Guid)">
+            <summary>
+            For Player Flow: Fetch and load any Gameplay data needed for replaying a Ludeo
+            Ludeo data will be downloaded at this stage.
+            Switches LudeoSDK to to LudeoGameplayType.InLudeo
+            </summary>
+            <param name="ludeoId">The Ludeo Id as given from the Ludeo platform (as parsed from your Execution command line argument)</param>
+            <returns>LudeoMessage.Success if switch successful</returns>
+            <example>
+            \include ExampleLoadGameplayDataLudeo.cs
+            </example>
+        </member>
+        <member name="M:LudeoSDK.LudeoManager.BeginGameplay">
+            <summary>Begin a Gameplay according to the current LudeoGameplayType. LudeoGameplayType is set according to the LoadGameplayData method signature you've called.</summary>
+            <example>
+            \include ExampleBeginGameplay.cs
+            </example>
+        </member>
+        <member name="M:LudeoSDK.LudeoManager.EndGameplay">
+            <summary>End the current Gameplay if one is running.</summary>
+            <example>
+            \include ExampleEndGameplay.cs
+            </example>
+        </member>
+        <member name="M:LudeoSDK.LudeoManager.AbortGameplay">
+            <summary>Abort the current Gameplay. Aborts the current Gameplay and destroys any LudeoSDK UI and tracked data.</summary>
+            <example>
+            \include ExampleAbortGameplay.cs
+            </example>
+        </member>
+        <member name="M:LudeoSDK.LudeoManager.ReadyForGameplay">
+            <summary>
+            Notify Ludeo you are ready to begin the Gameplay and display any LudeoSDK UI if such exists.
+            </summary>
+            <returns>LudeoMessage.Success if call is valid.</returns>
+            <example>
+            \include ExampleReadyForGameplay.cs
+            </example>
+        </member>
+        <member name="M:LudeoSDK.LudeoManager.MarkHighlight">
+            <summary>Mark the latest Ludeo data collected as a highlight.
+            </summary>
+            <returns>LudeoMessage.Success for successful highlight marking or other relevant errors.</returns>
+            <example>
+            \include ExampleMarkHighlight.cs
+            </example>
+        </member>
+        <member name="M:LudeoSDK.LudeoManager.ResumeGameplay">
+            <summary>Continue the Gameplay you've already started and paused.</summary>
+            <example>
+            \include ExampleResumeGameplay.cs
+            </example>
+        </member>
+        <member name="M:LudeoSDK.LudeoManager.PauseGameplay">
+            <summary>Pause the Gameplay you've already started. Do this for every portion of the game that is not playable, for example, during cutscenes. If you don’t pause Gameplay and Ludeo contains unplayable parts, the created Ludeos may become unplayable.</summary>
+            <example>
+            \include ExamplePauseGameplay.cs
+            </example>
+        </member>
+        <member name="M:LudeoSDK.LudeoManager.SetGameplayDefinitions(LudeoSDK.GameplayDefinitions)">
+            <summary>
+            Set the Gameplay definitions for the Gameplay you are about to run. Definitions are constant throughout the same Gameplay.
+            </summary>
+            <param name="gameplayDefinitions">A collection of definitions according to their types.</param>
+            <returns></returns>
+            <example>
+            \include ExampleSetGameplayDefinitions.cs
+            </example>
+        </member>
+        <member name="M:LudeoSDK.LudeoManager.SetGameplayState(System.String,System.Int32)">
+            <summary>Set a Ludeo Gameplay int value state.</summary>       <param name="key">A unique key.</param>    <param name="value">The int value.</param>   <returns>int value was set successfully or something went wrong.</returns>
+            <example>
+            \include ExampleSetGameplayStateInt.cs
+            </example>
+        </member>
+        <member name="M:LudeoSDK.LudeoManager.SetGameplayState(System.String,System.Single)">
+            <summary>Set a Ludeo Gameplay float value state.</summary>      <param name="key">A unique key.</param>    <param name="value">The float value.</param> <returns>float value was set successfully or something went wrong.</returns>
+            <example>
+            \include ExampleSetGameplayStateFloat.cs
+            </example>
+        </member>
+        <member name="M:LudeoSDK.LudeoManager.SetGameplayState(System.String,System.Boolean)">
+            <summary>Set a Ludeo Gameplay booleans value state.</summary>   <param name="key">A unique key.</param>    <param name="value">The bool value.</param>  <returns>bool value was set successfully or something went wrong.</returns>
+            <example>
+            \include ExampleSetGameplayStateBool.cs
+            </example>
+        </member>
+        <member name="M:LudeoSDK.LudeoManager.SetGameplayState(System.String,LudeoSDK.Vec3)">
+            <summary>Set a Ludeo Gameplay Vec3 (== Ludeo Vector3) value state.
+            You can use Vector3.ToLudeoVec3() to convert.</summary>
+            <param name="key">A unique key.</param>    <param name="value">The Vec3 value.</param>  <returns>Vec3 value was set successfully or something went wrong.</returns>
+            <example>
+            \include ExampleSetGameplayStateVec3.cs
+            </example>
+        </member>
+        <member name="M:LudeoSDK.LudeoManager.SetGameplayState(System.String,LudeoSDK.Quatern)">
+            <summary>Set a Ludeo Gameplay Quatern (== Ludeo Quaternion) value state.
+            You can use Quaternion.ToLudeoQuatern() to convert.</summary>
+            <param name="key">A unique key.</param>    <param name="value">The Quatern value.</param>  <returns>Quatern value was set successfully or something went wrong.</returns>
+            <example>
+            \include ExampleSetGameplayStateQuatern.cs
+            </example>
+        </member>
+        <member name="M:LudeoSDK.LudeoManager.GetGameplayDefinitionsKeys(LudeoSDK.LudeoParam,System.String[]@)">
+            <summary>Get the array of the loaded Ludeo's GameplayDefinition keys by a certain LudeoParam type for replay.</summary> <param name="paramType">The type of parameter</param>   <param name="keys">The array of keys found</param>  <returns>LudeoMessage.Success or LudeoMessage.Warning_Value_Not_Found.</returns>
+            <example>
+            \include ExampleGetGameplayDefinitionsKeys.cs
+            </example>
+        </member>
+        <member name="M:LudeoSDK.LudeoManager.GetGameplayDefinition(System.String,System.Int32@)">
+            <summary>Get an int definition saved in the loaded Ludeo.</summary>    <param name="key">The Unique key used to save the definition.</param> <param name="value">The value of the definition.</param>   <returns>LudeoMessage.Success or LudeoMessage.Warning_Value_Not_Found.</returns>
+            <example>
+            \include ExampleGetGameplayDefinitionInt.cs
+            </example>
+        </member>
+        <member name="M:LudeoSDK.LudeoManager.GetGameplayDefinition(System.String,System.Single@)">
+            <summary>Get a float definition saved in the loaded Ludeo.</summary>    <param name="key">The Unique key used to save the definition.</param> <param name="value">The value of the definition.</param>   <returns>LudeoMessage.Success or LudeoMessage.Warning_Value_Not_Found.</returns>
+            <example>
+            \include ExampleGetGameplayDefinitionFloat.cs
+            </example>
+        </member>
+        <member name="M:LudeoSDK.LudeoManager.GetGameplayDefinition(System.String,System.Boolean@)">
+            <summary>Get a bool definition saved in the loaded Ludeo.</summary>    <param name="key">The Unique key used to save the definition.</param> <param name="value">The value of the definition.</param>   <returns>LudeoMessage.Success or LudeoMessage.Warning_Value_Not_Found.</returns>
+            <example>
+            \include ExampleGetGameplayDefinitionBool.cs
+            </example>
+        </member>
+        <member name="M:LudeoSDK.LudeoManager.GetGameplayDefinition(System.String,LudeoSDK.Vec3@)">
+            <summary>Get a Vec3 definition saved in the loaded Ludeo.</summary>    <param name="key">The Unique key used to save the definition.</param> <param name="value">The value of the definition.</param>   <returns>LudeoMessage.Success or LudeoMessage.Warning_Value_Not_Found.</returns>
+            <example>
+            \include ExampleGetGameplayDefinitionVec3.cs
+            </example>
+        </member>
+        <member name="M:LudeoSDK.LudeoManager.GetGameplayDefinition(System.String,LudeoSDK.Quatern@)">
+            <summary>Get a Quatern definition saved in the loaded Ludeo.</summary>    <param name="key">The Unique key used to save the definition.</param> <param name="value">The value of the definition.</param>   <returns>LudeoMessage.Success or LudeoMessage.Warning_Value_Not_Found.</returns>
+            <example>
+            \include ExampleGetGameplayDefinitionQuatern.cs
+            </example>
+        </member>
+        <member name="M:LudeoSDK.LudeoManager.GetGameplayDefinition(System.String,System.String@)">
+            <summary>Get a string definition saved in the loaded Ludeo.</summary>    <param name="key">The Unique key used to save the definition.</param> <param name="value">The value of the definition.</param>   <returns>LudeoMessage.Success or LudeoMessage.Warning_Value_Not_Found.</returns>
+            <example>
+            \include ExampleGetGameplayDefinitionString.cs
+            </example>
+        </member>
+        <member name="M:LudeoSDK.LudeoManager.GetGameplayStateKeys(LudeoSDK.LudeoParam,System.String[]@)">
+            <summary>Get the array of the loaded Ludeo's GameplayState keys by a certain LudeoParam type for replay.</summary> <param name="paramType">The type of parameter</param> <param name="keys">The array of keys found</param>  <returns>LudeoMessage.Success or LudeoMessage.Warning_Value_Not_Found.</returns>
+            <example>
+            \include ExampleGetGameplayStateKeys.cs
+            </example>
+        </member>
+        <member name="M:LudeoSDK.LudeoManager.GetGameplayState(System.String,System.Int32@)">
+            <summary>Get an int GameplayState saved in the loaded Ludeo.</summary>    <param name="key">The Unique key used to save state.</param> <param name="value">Value of variable</param>   <returns>LudeoMessage.Success or LudeoMessage.Warning_Value_Not_Found.</returns>
+            <example>
+            \include ExampleGetGameplayStateInt.cs
+            </example>
+        </member>
+        <member name="M:LudeoSDK.LudeoManager.GetGameplayState(System.String,System.Single@)">
+            <summary>Get a float GameplayState saved in the loaded Ludeo.</summary>    <param name="key">The Unique key used to save state.</param> <param name="value">Value of variable</param>   <returns>LudeoMessage.Success or LudeoMessage.Warning_Value_Not_Found.</returns>
+            <example>
+            \include ExampleGetGameplayStateFloat.cs
+            </example>
+        </member>
+        <member name="M:LudeoSDK.LudeoManager.GetGameplayState(System.String,System.Boolean@)">
+            <summary>Get a bool GameplayState saved in the loaded Ludeo.</summary>    <param name="key">The Unique key used to save state.</param> <param name="value">Value of variable</param>   <returns>LudeoMessage.Success or LudeoMessage.Warning_Value_Not_Found.</returns>
+            <example>
+            \include ExampleGetGameplayStateBool.cs
+            </example>
+        </member>
+        <member name="M:LudeoSDK.LudeoManager.GetGameplayState(System.String,LudeoSDK.Vec3@)">
+            <summary>Get a Vec3 GameplayState saved in the loaded Ludeo.</summary>    <param name="key">The Unique key used to save state.</param> <param name="value">Value of variable</param>   <returns>LudeoMessage.Success or LudeoMessage.Warning_Value_Not_Found.</returns>
+            <example>
+            \include ExampleGetGameplayStateVec3.cs
+            </example>
+        </member>
+        <member name="M:LudeoSDK.LudeoManager.GetGameplayState(System.String,LudeoSDK.Quatern@)">
+            <summary>Get a Quatern GameplayState saved in the loaded Ludeo.</summary>    <param name="key">The Unique key used to save state.</param> <param name="value">Value of variable</param>   <returns>LudeoMessage.Success or LudeoMessage.Warning_Value_Not_Found.</returns>
+            <example>
+            \include ExampleGetGameplayStateQuatern.cs
+            </example>
+        </member>
+        <member name="M:LudeoSDK.LudeoManager.GetLudeoStateInfo">
+            @endcond INTERNAL
+            <summary>
+            Get Ludeo relevant info on the latest Ludeo state
+            </summary>
+            <returns>Data supplied by Ludeo</returns>
+            <example>
+            \include ExampleGetLudeoStateInfo.cs
+            </example>
+        </member>
+        <member name="M:LudeoSDK.LudeoManager.RegisterHandler(LudeoSDK.CallbackWithLudeoFlowState)">
+            <summary>
+            Register handler to be notifed on any changes in LudeoSDK flow.
+            If you clear the handler from memory - use this to register again.       
+            </summary>
+            <param name="ludeoHandler">The list of handlers to call on Ludeo events.</param>
+            <returns></returns>
+            <example>
+            \include ExampleRegisterHandler.cs
+            </example>
+        </member>
+        <member name="T:LudeoSDK.LudeoPlayer">
+            <summary>
+            Handles the usage of Ludeos in your Game
+            </summary>
+        </member>
+        <member name="M:LudeoSDK.LudeoPlayer.EndLudeo">
+            @endcond INTERNAL
+        </member>
+        <member name="T:LudeoSDK.GameplayDefinitions">
+            <summary>
+            Used to hold the static data of the Gameplay a creator is about to run.
+            E.g. MapType, CharacterType, HairColor etc.
+            These are set once before the Gameplay and do not change during the run.
+            </summary>
+        </member>
+        <member name="M:LudeoSDK.GameplayDefinitions.AddDefinition(System.String,System.Int32)">
+            <summary>Add a new definition Key-Value.</summary>  <param name="key">The Unique Key to save.</param>   <param name="value">int value to keep.</param>
+        </member>
+        <member name="M:LudeoSDK.GameplayDefinitions.AddDefinition(System.String,System.Single)">
+            <summary>Add a new definition Key-Value.</summary>  <param name="key">The Unique Key to save.</param>   <param name="value">float value to keep.</param>
+        </member>
+        <member name="M:LudeoSDK.GameplayDefinitions.AddDefinition(System.String,System.Boolean)">
+            <summary>Add a new definition Key-Value.</summary>  <param name="key">The Unique Key to save.</param>   <param name="value">bool value to keep.</param>
+        </member>
+        <member name="M:LudeoSDK.GameplayDefinitions.AddDefinition(System.String,LudeoSDK.Vec3)">
+            <summary>Add a new definition Key-Value.</summary>  <param name="key">The Unique Key to save.</param>   <param name="value">Vec3 value to keep.</param>
+        </member>
+        <member name="M:LudeoSDK.GameplayDefinitions.AddDefinition(System.String,LudeoSDK.Quatern)">
+            <summary>Add a new definition Key-Value.</summary>  <param name="key">The Unique Key to save.</param>   <param name="value">Quatern value to keep.</param>
+        </member>
+        <member name="M:LudeoSDK.GameplayDefinitions.AddDefinition(System.String,System.String)">
+            <summary>Add a new definition Key-Value.</summary>  <param name="key">The Unique Key to save.</param>   <param name="value">string value to keep.</param>
+        </member>
+        <member name="M:LudeoSDK.GameplayDefinitions.TryUpdateDefinition(System.String,System.Int32)">
+            <summary>Update existing definition Key-Value.</summary>  <param name="key">The Unique Key to save.</param>   <param name="value">int value to keep.</param>
+        </member>
+        <member name="M:LudeoSDK.GameplayDefinitions.TryUpdateDefinition(System.String,System.Single)">
+            <summary>Update existing definition Key-Value.</summary>  <param name="key">The Unique Key to save.</param>   <param name="value">float value to keep.</param>
+        </member>
+        <member name="M:LudeoSDK.GameplayDefinitions.TryUpdateDefinition(System.String,System.Boolean)">
+            <summary>Update existing definition Key-Value.</summary>  <param name="key">The Unique Key to save.</param>   <param name="value">bool value to keep.</param>
+        </member>
+        <member name="M:LudeoSDK.GameplayDefinitions.TryUpdateDefinition(System.String,LudeoSDK.Vec3)">
+            <summary>Update existing definition Key-Value.</summary>  <param name="key">The Unique Key to save.</param>   <param name="value">Vec3 value to keep.</param>
+        </member>
+        <member name="M:LudeoSDK.GameplayDefinitions.TryUpdateDefinition(System.String,LudeoSDK.Quatern)">
+            <summary>Update existing definition Key-Value.</summary>  <param name="key">The Unique Key to save.</param>   <param name="value">Quatern value to keep.</param>
+        </member>
+        <member name="M:LudeoSDK.GameplayDefinitions.TryUpdateDefinition(System.String,System.String)">
+            <summary>Update existing definition Key-Value.</summary>  <param name="key">The Unique Key to save.</param>   <param name="value">string value to keep.</param>
+        </member>
+        <member name="T:LudeoSDK.Tracker">
+            <summary>
+            Handles the tracking of data into Ludeo content
+            </summary>
+        </member>
+        <member name="M:LudeoSDK.Tracker.StartTracking">
+            <summary>
+            Call at the start of your run
+            </summary>
+            <returns>Result of call</returns>
+        </member>
+        <member name="T:LudeoSDK.LudeoLogLevel">
+            <summary>
+            LudeoSDK logging level
+            </summary>
+        </member>
+        <member name="T:LudeoSDK.Vec3">
+            <summary>
+            Ludeo 3D Vector (can be converted to and from Unity's Vector3 struct)
+            </summary>
+        </member>
+        <member name="T:LudeoSDK.Quatern">
+            <summary>
+            Ludeo Quaternion (can be converted to and from Unity's Quaternion struct)
+            </summary>
+        </member>
+        <member name="T:LudeoSDK.FixedString">
+            @cond INTERNAL    
+        </member>
+        <member name="T:LudeoSDK.LudeoGameplayType">
+            @endcond
+            <summary>
+            The mode LudeoSDK is opperating in.
+            </summary>
+        </member>
+        <member name="F:LudeoSDK.LudeoGameplayType.Null">
+            <summary>Undefined Ludeo gameplay.</summary>
+        </member>
+        <member name="F:LudeoSDK.LudeoGameplayType.InGame">
+            <summary>Users who play the game and track its data in order to create Ludeos without playing a Ludeo.</summary>
+        </member>
+        <member name="F:LudeoSDK.LudeoGameplayType.InLudeo">
+            <summary>Users who replay published Ludeos.</summary>
+        </member>
+        <member name="T:LudeoSDK.LudeoParam">
+            <summary>
+            Param Types supported by LudeoSDK.
+            </summary>
+        </member>
+        <member name="T:LudeoSDK.LudeoFlowState">
+            <summary>
+            Defines the active LudeoSDK flow.
+            States prefixed with "Waiting" mean the LudeoSDK is waiting for an action by the Game.
+            See documenation for more info.
+            </summary>
+        </member>
+        <member name="T:LudeoSDK.LudeoState">
+            <summary>
+            Holds information about the current state of LudeoSDK.
+            </summary>
+        </member>
+        <member name="T:LudeoSDK.LudeoLauncher">
+            <summary>
+            The launcher type with used to launch the game
+            </summary>
+        </member>
+        <member name="T:LudeoSDK.LudeoMessage">
+            <summary>
+            Feedback status from LudeoSDK.
+            </summary>
+        </member>
+    </members>
+</doc>

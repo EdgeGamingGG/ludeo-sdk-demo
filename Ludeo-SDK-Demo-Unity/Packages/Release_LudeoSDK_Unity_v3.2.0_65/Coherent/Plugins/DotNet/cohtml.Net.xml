@@ -1,0 +1,400 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>cohtml.Net</name>
+    </assembly>
+    <members>
+        <member name="T:cohtml.Net.PreserveAttribute">
+            <summary>
+            Prevents byte code stripping from removing a class or method.
+            More info on URL https://docs.unity3d.com/2023.1/Documentation/ScriptReference/Scripting.PreserveAttribute.html
+            </summary>
+        </member>
+        <member name="T:cohtml.Net.BoundEventHandle">
+            <summary>
+            Handle for registered delegates
+            </summary>
+        </member>
+        <member name="T:cohtml.Net.CoherentProperty">
+            <summary>
+            Specify a property / field or method visible to Coherent UI
+            </summary>
+        </member>
+        <member name="M:cohtml.Net.CoherentProperty.#ctor">
+            <summary>
+            Make a property / field or method visible to Coherent UI
+            </summary>
+        </member>
+        <member name="M:cohtml.Net.CoherentProperty.#ctor(System.String)">
+            <summary>
+            Make a property / field or method visible to Coherent UI
+            </summary>
+            <param name="name">name of the property / field / method</param>
+        </member>
+        <member name="T:cohtml.Net.PropertyBindingFlags">
+            <summary>
+            Determines the set of the bound properties for this type
+            </summary>
+        </member>
+        <member name="F:cohtml.Net.PropertyBindingFlags.Explicit">
+            <summary>Bind only properties and fields with CoherentProperty attribute</summary>
+        </member>
+        <member name="F:cohtml.Net.PropertyBindingFlags.Instance">
+            <summary>Bind only instance properties and fields</summary>
+        </member>
+        <member name="F:cohtml.Net.PropertyBindingFlags.Static">
+            <summary>Bind only static properties and fields</summary>
+        </member>
+        <member name="F:cohtml.Net.PropertyBindingFlags.All">
+            <summary>Bind all instance and static properties and fields</summary>
+        </member>
+        <member name="T:cohtml.Net.CoherentType">
+            <summary>
+            Specify which properties and fields of a type are visible to Coherent UI
+            </summary>
+        </member>
+        <member name="T:cohtml.Net.UnsupportedPrimitiveTypeException">
+            <summary>
+            Thrown when trying to bind a value of unsupported primitive type such as long
+            </summary>
+        </member>
+        <member name="T:cohtml.Net.ValueType">
+            <summary>
+            Specifies the type of Value
+            </summary>
+        </member>
+        <member name="F:cohtml.Net.ValueType.Null">
+            <summary> empty value </summary>
+        </member>
+        <member name="F:cohtml.Net.ValueType.Undefined">
+            <summary> undefined value </summary>
+        </member>
+        <member name="F:cohtml.Net.ValueType.Boolean">
+            <summary> boolean value </summary>
+        </member>
+        <member name="F:cohtml.Net.ValueType.Number">
+            <summary> double value </summary>
+        </member>
+        <member name="F:cohtml.Net.ValueType.String">
+            <summary> string value </summary>
+        </member>
+        <member name="F:cohtml.Net.ValueType.Object">
+            <summary> object value </summary>
+        </member>
+        <member name="F:cohtml.Net.ValueType.Array">
+            <summary> array value </summary>
+        </member>
+        <member name="T:cohtml.Net.InvalidValueCastException">
+            <summary>
+            Thrown when casting a Value to an incompatible type
+            </summary>
+        </member>
+        <member name="T:cohtml.Net.Value">
+            <summary>
+            Type for representing generic JavaScript values
+            </summary>
+        </member>
+        <member name="F:cohtml.Net.Value.Type">
+            <summary>
+            The type of the data stored in this Value instance
+            </summary>
+        </member>
+        <member name="M:cohtml.Net.Value.#ctor">
+            <summary>
+            Create a null value
+            </summary>
+        </member>
+        <member name="M:cohtml.Net.Value.#ctor(System.Boolean)">
+            <summary>
+            Create a boolean value
+            </summary>
+            <param name="value">the integer value of the Value object</param>
+        </member>
+        <member name="M:cohtml.Net.Value.#ctor(System.Int32)">
+            <summary>
+            Create an integer value
+            </summary>
+            <param name="value">the integer value of the Value object</param>
+        </member>
+        <member name="M:cohtml.Net.Value.#ctor(System.UInt32)">
+            <summary>
+            Create an unsigned integer value
+            </summary>
+            <param name="value">the unsigned integer value of the Value object</param>
+        </member>
+        <member name="M:cohtml.Net.Value.#ctor(System.Single)">
+            <summary>
+            Create a float value
+            </summary>
+            <param name="value">the float value of the Value object</param>
+        </member>
+        <member name="M:cohtml.Net.Value.#ctor(System.Double)">
+            <summary>
+            Create a double value
+            </summary>
+            <param name="value">the double value of the Value object</param>
+        </member>
+        <member name="M:cohtml.Net.Value.#ctor(System.String)">
+            <summary>
+            Create a string value
+            </summary>
+            <param name="value">the string value of the Value object</param>
+        </member>
+        <member name="M:cohtml.Net.Value.#ctor(cohtml.Net.Value[])">
+            <summary>
+            Create an array value
+            </summary>
+            <param name="value">the array value of the Value object</param>
+        </member>
+        <member name="M:cohtml.Net.Value.#ctor(System.Collections.Generic.Dictionary{System.String,cohtml.Net.Value})">
+            <summary>
+            Create an object value
+            </summary>
+            <param name="value">dictionary of properties of the Value object</param>
+        </member>
+        <member name="M:cohtml.Net.Value.#ctor(cohtml.Net.ValueObject)">
+            <summary>
+            Create an object value
+            </summary>
+            <param name="value">dictionary of properties of the Value object</param>
+        </member>
+        <member name="M:cohtml.Net.Value.op_Implicit(cohtml.Net.Value)~System.Boolean">
+            <summary>
+            cast a value to a boolean
+            </summary>
+            <param name="value">value to be casted</param>
+            <returns>the boolean stored in the value</returns>
+        </member>
+        <member name="M:cohtml.Net.Value.op_Implicit(cohtml.Net.Value)~System.Int32">
+            <summary>
+            cast a value to an int
+            </summary>
+            <param name="value">value to be casted</param>
+            <returns>the int stored in the value</returns>
+        </member>
+        <member name="M:cohtml.Net.Value.op_Implicit(cohtml.Net.Value)~System.UInt32">
+            <summary>
+            cast a value to an uint
+            </summary>
+            <param name="value">value to be casted</param>
+            <returns>the unsigned int stored in the value</returns>
+        </member>
+        <member name="M:cohtml.Net.Value.op_Implicit(cohtml.Net.Value)~System.Single">
+            <summary>
+            cast a value to a float
+            </summary>
+            <param name="value">value to be casted</param>
+            <returns>the float stored in the value</returns>
+        </member>
+        <member name="M:cohtml.Net.Value.op_Implicit(cohtml.Net.Value)~System.Double">
+            <summary>
+            cast a value to a double
+            </summary>
+            <param name="value">value to be casted</param>
+            <returns>the double stored in the value</returns>
+        </member>
+        <member name="M:cohtml.Net.Value.op_Implicit(cohtml.Net.Value)~System.String">
+            <summary>
+            cast a value to a string
+            </summary>
+            <param name="value">value to be casted</param>
+            <returns>the string stored in the value</returns>
+        </member>
+        <member name="M:cohtml.Net.Value.op_Implicit(cohtml.Net.Value)~cohtml.Net.Value[]">
+            <summary>
+            cast a value to an array
+            </summary>
+            <param name="value">value to be casted</param>
+            <returns>the array of Value objects stored in the value</returns>
+        </member>
+        <member name="M:cohtml.Net.Value.op_Implicit(cohtml.Net.Value)~System.Collections.Generic.Dictionary{System.String,cohtml.Net.Value}">
+            <summary>
+            cast a value to a dictionary of properties
+            </summary>
+            <param name="value">value to be casted</param>
+            <returns>the dictionary of properties of the value</returns>
+        </member>
+        <member name="M:cohtml.Net.Value.op_Equality(cohtml.Net.Value,cohtml.Net.Value)">
+            <summary>
+            Compares two Value objects
+            </summary>
+            <param name="lhs">object to be compared</param>
+            <param name="rhs">object to be compared</param>
+            <returns>true if the objects are from the same type and have the same values</returns>
+        </member>
+        <member name="M:cohtml.Net.Value.op_Inequality(cohtml.Net.Value,cohtml.Net.Value)">
+            <summary>
+            Compares two Value objects
+            </summary>
+            <param name="lhs">object to be compared</param>
+            <param name="rhs">object to be compared</param>
+            <returns>false if the objects are from the same type and have the same values</returns>
+        </member>
+        <member name="M:cohtml.Net.Value.Equals(System.Object)">
+            <summary>
+            Compare to another object
+            </summary>
+            <param name="obj"></param>
+            <returns>true if obj is a Value instance equal to this one</returns>
+        </member>
+        <member name="M:cohtml.Net.Value.GetHashCode">
+            <summary>
+            Hash code for Value
+            </summary>
+            <returns>hash code for the current instance</returns>
+        </member>
+        <!-- Badly formed XML comment ignored for member "T:cohtml.Net.ValueObject" -->
+        <member name="M:cohtml.Net.ILocalizationManager.TranslationData.Set(System.String)">
+            <summary>
+            Set the translated text.
+            </summary>
+            <param name="text">The translated text.</param>
+        </member>
+        <member name="M:cohtml.Net.INodeProxy.GetAttribute(System.String)">
+            <summary>
+            Get attribute's value whit given name.
+            <param name="name">The name of the attribute.</param>
+            </summary>
+            <returns>The value of the attribute.</returns>
+        </member>
+        <member name="M:cohtml.Net.INodeProxy.GetAttribute(System.UInt32)">
+            <summary>
+            Get attribute's value whit given Id.
+            <param name="id">the numbered id of the attribute - can be used to iterate over all attributes.</param>
+            </summary>
+            <returns>The value of the attribute.</returns>
+        </member>
+        <member name="M:cohtml.Net.INodeProxy.GetValueOfElement">
+            <summary>
+            Gives the value of the Element.
+            </summary>
+            <returns>The value of the element.</returns>
+        </member>
+        <member name="T:cohtml.Net.View">
+            <summary>
+            Partial class view which holds additional TriggerEvent methods.
+            Other partial class cohtml.Net.View will be generated from SWIG generation.
+            </summary>
+        </member>
+        <member name="M:cohtml.Net.View.TriggerEvent``1(System.String,``0)">
+            <summary>
+            Trigger event in view
+            </summary>
+            <typeparam name="T1">Type for the event argument</typeparam>
+            <param name="name">name of the event</param>
+            <param name="argument1">argument for the event</param>
+        </member>
+        <member name="M:cohtml.Net.View.TriggerEvent``2(System.String,``0,``1)">
+             <summary>
+            
+             </summary>
+             <typeparam name="T1">Type for the event argument</typeparam>
+             <typeparam name="T2">Type for the event argument</typeparam>
+             <param name="name">name of the event</param>
+             <param name="argument1">argument for the event</param>
+             <param name="argument2">argument for the event</param>
+        </member>
+        <member name="M:cohtml.Net.View.TriggerEvent``3(System.String,``0,``1,``2)">
+             <summary>
+            
+             </summary>
+             <typeparam name="T1">Type for the event argument</typeparam>
+             <typeparam name="T2">Type for the event argument</typeparam>
+             <typeparam name="T3">Type for the event argument</typeparam>
+             <param name="name">name of the event</param>
+             <param name="argument1">argument for the event</param>
+             <param name="argument2">argument for the event</param>
+             <param name="argument3">argument for the event</param>
+        </member>
+        <member name="M:cohtml.Net.View.TriggerEvent``4(System.String,``0,``1,``2,``3)">
+             <summary>
+            
+             </summary>
+             <typeparam name="T1">Type for the event argument</typeparam>
+             <typeparam name="T2">Type for the event argument</typeparam>
+             <typeparam name="T3">Type for the event argument</typeparam>
+             <typeparam name="T4">Type for the event argument</typeparam>
+             <param name="name">name of the event</param>
+             <param name="argument1">argument for the event</param>
+             <param name="argument2">argument for the event</param>
+             <param name="argument3">argument for the event</param>
+             <param name="argument4">argument for the event</param>
+        </member>
+        <member name="M:cohtml.Net.View.TriggerEvent``5(System.String,``0,``1,``2,``3,``4)">
+             <summary>
+            
+             </summary>
+             <typeparam name="T1">Type for the event argument</typeparam>
+             <typeparam name="T2">Type for the event argument</typeparam>
+             <typeparam name="T3">Type for the event argument</typeparam>
+             <typeparam name="T4">Type for the event argument</typeparam>
+             <typeparam name="T5">Type for the event argument</typeparam>
+             <param name="name">name of the event</param>
+             <param name="argument1">argument for the event</param>
+             <param name="argument2">argument for the event</param>
+             <param name="argument3">argument for the event</param>
+             <param name="argument4">argument for the event</param>
+             <param name="argument5">argument for the event</param>
+        </member>
+        <member name="M:cohtml.Net.View.TriggerEvent``6(System.String,``0,``1,``2,``3,``4,``5)">
+             <summary>
+            
+             </summary>
+             <typeparam name="T1">Type for the event argument</typeparam>
+             <typeparam name="T2">Type for the event argument</typeparam>
+             <typeparam name="T3">Type for the event argument</typeparam>
+             <typeparam name="T4">Type for the event argument</typeparam>
+             <typeparam name="T5">Type for the event argument</typeparam>
+             <typeparam name="T6">Type for the event argument</typeparam>
+             <param name="name">name of the event</param>
+             <param name="argument1">argument for the event</param>
+             <param name="argument2">argument for the event</param>
+             <param name="argument3">argument for the event</param>
+             <param name="argument4">argument for the event</param>
+             <param name="argument5">argument for the event</param>
+             <param name="argument6">argument for the event</param>
+        </member>
+        <member name="M:cohtml.Net.View.TriggerEvent``7(System.String,``0,``1,``2,``3,``4,``5,``6)">
+             <summary>
+            
+             </summary>
+             <typeparam name="T1">Type for the event argument</typeparam>
+             <typeparam name="T2">Type for the event argument</typeparam>
+             <typeparam name="T3">Type for the event argument</typeparam>
+             <typeparam name="T4">Type for the event argument</typeparam>
+             <typeparam name="T5">Type for the event argument</typeparam>
+             <typeparam name="T6">Type for the event argument</typeparam>
+             <typeparam name="T7">Type for the event argument</typeparam>
+             <param name="name">name of the event</param>
+             <param name="argument1">argument for the event</param>
+             <param name="argument2">argument for the event</param>
+             <param name="argument3">argument for the event</param>
+             <param name="argument4">argument for the event</param>
+             <param name="argument5">argument for the event</param>
+             <param name="argument6">argument for the event</param>
+             <param name="argument7">argument for the event</param>
+        </member>
+        <member name="M:cohtml.Net.View.TriggerEvent``8(System.String,``0,``1,``2,``3,``4,``5,``6,``7)">
+             <summary>
+            
+             </summary>
+             <typeparam name="T1">Type for the event argument</typeparam>
+             <typeparam name="T2">Type for the event argument</typeparam>
+             <typeparam name="T3">Type for the event argument</typeparam>
+             <typeparam name="T4">Type for the event argument</typeparam>
+             <typeparam name="T5">Type for the event argument</typeparam>
+             <typeparam name="T6">Type for the event argument</typeparam>
+             <typeparam name="T7">Type for the event argument</typeparam>
+             <typeparam name="T8">Type for the event argument</typeparam>
+             <param name="name">name of the event</param>
+             <param name="argument1">argument for the event</param>
+             <param name="argument2">argument for the event</param>
+             <param name="argument3">argument for the event</param>
+             <param name="argument4">argument for the event</param>
+             <param name="argument5">argument for the event</param>
+             <param name="argument6">argument for the event</param>
+             <param name="argument7">argument for the event</param>
+             <param name="argument8">argument for the event</param>
+        </member>
+    </members>
+</doc>

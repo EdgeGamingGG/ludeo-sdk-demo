@@ -1,13 +1,13 @@
 {
   "dependencies": {
     "com.coherent-labs.cohtml": {
-      "version": "file:../../../Release_LudeoSDK_Unity_v3.2.0_65/Coherent",
+      "version": "file:Release_LudeoSDK_Unity_v3.2.0_65/Coherent",
       "depth": 0,
       "source": "local",
       "dependencies": {}
     },
     "com.ludeo.sdk": {
-      "version": "file:../../../Release_LudeoSDK_Unity_v3.2.0_65/com.ludeo.sdk@3.2.0",
+      "version": "file:Release_LudeoSDK_Unity_v3.2.0_65/com.ludeo.sdk@3.2.0",
       "depth": 0,
       "source": "local",
       "dependencies": {

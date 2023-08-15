@@ -1,0 +1,9 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements">
+    <ui:VisualElement class="body">
+        <Style src="Style.uss" />
+        <ui:ScrollView class="scroll-view">
+            <ui:Label name="message" text="Loading" class="message" style="-unity-text-align: upper-left;" />
+        </ui:ScrollView>
+        <ui:Button name="ok-button" text="OK" class="button" />
+    </ui:VisualElement>
+</ui:UXML>

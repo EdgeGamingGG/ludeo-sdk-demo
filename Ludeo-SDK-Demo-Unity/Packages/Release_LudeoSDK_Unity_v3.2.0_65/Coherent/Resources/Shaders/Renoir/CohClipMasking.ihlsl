@@ -1,0 +1,166 @@
+/*
+This file is part of Renoir, a modern graphics library.
+
+Copyright (c) 2012-2016 Coherent Labs AD and/or its licensors. All
+rights reserved in all media.
+
+The coded instructions, statements, computer programs, and/or related
+material (collectively the "Data") in these files contain confidential
+and unpublished information proprietary Coherent Labs and/or its
+licensors, which is protected by United States of America federal
+copyright law and by international treaties.
+
+This software or source code is supplied under the terms of a license
+agreement and nondisclosure agreement with Coherent Labs AD and may
+not be copied, disclosed, or exploited except in accordance with the
+terms of that agreement. The Data may not be disclosed or distributed to
+third parties, in whole or in part, without the prior written consent of
+Coherent Labs AD.
+
+COHERENT LABS MAKES NO REPRESENTATION ABOUT THE SUITABILITY OF THIS
+SOURCE CODE FOR ANY PURPOSE. THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT
+HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES,
+INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF
+MERCHANTABILITY, NONINFRINGEMENT, AND FITNESS FOR A PARTICULAR PURPOSE
+ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER, ITS AFFILIATES,
+PARENT COMPANIES, LICENSORS, SUPPLIERS, OR CONTRIBUTORS BE LIABLE FOR
+ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS
+OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
+HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT,
+STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN
+ANY WAY OUT OF THE USE OR PERFORMANCE OF THIS SOFTWARE OR SOURCE CODE,
+EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+*/
+
+#ifndef COH_CLIP_MASKING_GUARD
+#define COH_CLIP_MASKING_GUARD
+
+// The threshold here is the same as the one used in CohStencilPS.hlsl. We use
+// the same number to ensure the same behaviour as the clipping with the stencil
+#define AlphaClipThreshold 0.00390625f // = 1/256
+
+float4 ShadeClipMask(PS_INPUT input)
+{
+	float alpha = 0.0f;
+
+	if (ShaderType == 26)
+	{
+		alpha = min(1.0, input.Additional.z * input.Additional.w);
+
+		if (alpha < AlphaClipThreshold)
+		{
+			alpha = 0.0f;
+		}
+	}
+	else if (ShaderType == 27)
+	{
+		const float2 posPixels = input.ScreenNormalPosition.xy;
+		const float distance2edge = length(posPixels - input.Additional.xy) - input.Additional.z;
+		alpha = clamp(0.5 - distance2edge, 0, 1);
+
+		if (alpha < AlphaClipThreshold)
+		{
+			alpha = 0.0f;
+		}
+	}
+	else if (ShaderType == 28)
+	{
+		alpha = SAMPLE2D(txBuffer, input.Additional.xy).a;
+		alpha = lerp(1 - alpha, alpha, input.Color.r);
+	}
+	else if (ShaderType == 29)
+	{
+		alpha = (PrimProps0 * input.Color.y).a;
+	}
+
+	float2 uv;
+	uv.x = (ClipMaskOrigin.x + input.Position.x - ClipMaskViewportSize.x) / ViewportSize.x;
+	uv.y = (ClipMaskOrigin.y + input.Position.y - ClipMaskViewportSize.y) / ViewportSize.y;
+#if defined(__DX9__)
+	uv.xy += float2(1.0f / ViewportSize.x, 1.0f / ViewportSize.y) * 0.5f;
+#endif
+	const float otherValue =  SAMPLE2D(txBuffer1, uv) COH_A8_SAMPLE_MASK;
+
+	const float differenceValue = PrimProps1.x * (otherValue - alpha);
+	const float unionReplaceValue = PrimProps1.y * alpha;
+	const float intersectValue = PrimProps1.z * min(alpha, otherValue);
+
+	const float result = (unionReplaceValue + intersectValue + differenceValue);
+	return float4(result, result, result, result);
+
+}
+
+#if defined(COH_AA_CLIPPING)
+
+float4 ClipWithMaskTexture(float4 position, float4 color)
+{
+	float4 result = (float4)0;
+	if (ShouldClip == 0)
+	{
+		result = color;
+	}
+	else
+	{
+		// ClipMaskViewportSize will contain the texture size of the clip mask
+		// ClipMaskOrigin will contain position of the upper left corner of the clip mask
+		float2 uv = float2(0.0f, 0.0f);
+		uv.x = (ClipMaskOrigin.x + position.x) / ClipMaskViewportSize.x;
+		uv.y = (ClipMaskOrigin.y + position.y) / ClipMaskViewportSize.y;
+#if defined(__DX9__)
+		uv.xy += float2(1.0f / ClipMaskViewportSize.x, 1.0f / ClipMaskViewportSize.y) * 0.5f;
+#endif
+		const float maskValue =	SAMPLE2D(txBuffer4, uv) COH_A8_SAMPLE_MASK;
+
+		result = color * maskValue;
+	}
+
+	return result;
+}
+
+float4 ClipWithMaskTexture(PS_INPUT input, float4 color)
+{
+	return ClipWithMaskTexture(input.Position, color);
+}
+
+#if COH_IS_CROSSCOMPILING || defined(__PSSL__)
+float4 ClipWithMaskTexture(PS_INPUT_PATH input, float4 color)
+{
+	return ClipWithMaskTexture(input.Position, color);
+}
+#endif
+
+float4 ClipWithMaskTexture(PS_INPUT_RENOIR_SHADER input, float4 color)
+{
+	return ClipWithMaskTexture(input.Position, color);
+}
+
+#else
+
+float4 ClipWithMaskTexture(PS_INPUT_PATH input, float4 color)
+{
+#if defined(__PSSL__)
+	(void)input; // This is not accepted in the spirv cross compiler so narrow the define scope
+#endif
+	return color;
+}
+
+float4 ClipWithMaskTexture(PS_INPUT input, float4 color)
+{
+#if defined(__PSSL__)
+	(void)input; // This is not accepted in the spirv cross compiler so narrow the define scope
+#endif
+	return color;
+}
+
+float4 ClipWithMaskTexture(PS_INPUT_RENOIR_SHADER input, float4 color)
+{
+#if defined(__PSSL__)
+	(void)input; // This is not accepted in the spirv cross compiler so narrow the define scope
+#endif
+	return color;
+}
+
+#endif
+
+#endif // COH_CLIP_MASKING_GUARD

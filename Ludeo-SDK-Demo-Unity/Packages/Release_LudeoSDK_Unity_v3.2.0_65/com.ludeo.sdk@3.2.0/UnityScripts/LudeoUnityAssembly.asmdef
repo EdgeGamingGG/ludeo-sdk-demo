@@ -1,0 +1,15 @@
+{
+    "name": "LudeoUnityAssembly",
+    "references": [
+        "GUID:6ae0815724f13534aa2c5f71ca344bab"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

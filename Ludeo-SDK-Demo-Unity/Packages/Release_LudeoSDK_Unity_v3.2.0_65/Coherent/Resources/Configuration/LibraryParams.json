@@ -1,0 +1,15 @@
+{
+    "loggingSeverity": 4,
+    "defaultStyleFontFamily": "Droid Sans",
+    "pathTessellationThresholdRatio": 2.5,
+    "allowMultipleRenderingThreads": false,
+    "textAtlasDimensions": {
+        "x": 1024,
+        "y": 1024
+    },
+    "EnableMemoryTracking": false,
+    "EnableDebugger": true,
+    "DebuggerPort": 9444,
+    "EnableDebuggerInBuild": false,
+    "useCSharpRenderingBackend": false
+}

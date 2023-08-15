@@ -1,0 +1,165 @@
+/*
+This file is part of Renoir, a modern graphics library.
+
+Copyright (c) 2012-2016 Coherent Labs AD and/or its licensors. All
+rights reserved in all media.
+
+The coded instructions, statements, computer programs, and/or related
+material (collectively the "Data") in these files contain confidential
+and unpublished information proprietary Coherent Labs and/or its
+licensors, which is protected by United States of America federal
+copyright law and by international treaties.
+
+This software or source code is supplied under the terms of a license
+agreement and nondisclosure agreement with Coherent Labs AD and may
+not be copied, disclosed, or exploited except in accordance with the
+terms of that agreement. The Data may not be disclosed or distributed to
+third parties, in whole or in part, without the prior written consent of
+Coherent Labs AD.
+
+COHERENT LABS MAKES NO REPRESENTATION ABOUT THE SUITABILITY OF THIS
+SOURCE CODE FOR ANY PURPOSE. THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT
+HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES,
+INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF
+MERCHANTABILITY, NONINFRINGEMENT, AND FITNESS FOR A PARTICULAR PURPOSE
+ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER, ITS AFFILIATES,
+PARENT COMPANIES, LICENSORS, SUPPLIERS, OR CONTRIBUTORS BE LIABLE FOR
+ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS
+OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
+HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT,
+STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN
+ANY WAY OUT OF THE USE OR PERFORMANCE OF THIS SOFTWARE OR SOURCE CODE,
+EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+*/
+#ifndef COH_SHADE_GEOMETRY_BATCHED_GUARD
+#define COH_SHADE_GEOMETRY_BATCHED_GUARD
+
+// Keep in sync w/ SDFGenerator
+#define DISTANCE_FIELD_MULTIPLIER 7.96875f
+#define DISTANCE_FIELD_MULTIPLIER_DIV2 3.984375f
+#define DISTANCE_FIELD_THRESHOLD 0.50196078431f
+
+#define SHOW_DF 0
+#define INVALID_UV_SCISSOR -1.0f
+
+float GetLuminance(float3 color)
+{
+	return 0.2126f * color.r + 0.7152f * color.g + 0.0722f * color.b;
+}
+
+#if defined(__DX9__)
+#define INT_EQUALS(X,Y) abs(X - Y) < 0.01f
+#else
+#define INT_EQUALS(X,Y) X == Y
+#endif
+
+void ShadeGeometry(in PS_INPUT input, inout float4 outColor, inout float alpha)
+{
+	int PSShaderType = input.VaryingData;
+
+	// Rect/stroke rect
+	if (INT_EQUALS(PSShaderType, 0))
+	{
+		alpha = min(1.0, input.Additional.x * input.Additional.y);
+	}
+	// Image
+	else if (INT_EQUALS(PSShaderType, 3))
+	{
+		float2 uvPoint = input.Additional.xy;
+		if (PrimProps1.z != INVALID_UV_SCISSOR || PrimProps1.w != INVALID_UV_SCISSOR)
+		{
+			uvPoint.x = clamp(input.Additional.x, PrimProps1.x, PrimProps1.x + PrimProps1.z);
+			uvPoint.y = clamp(input.Additional.y, PrimProps1.y, PrimProps1.y + PrimProps1.w);
+		}
+
+		outColor = SAMPLE2D(txBuffer, uvPoint);
+		outColor.a = lerp(1 - outColor.a, outColor.a, input.Color.r);
+		outColor.a = lerp(GetLuminance(outColor.rgb), outColor.a, input.Color.b);
+		alpha = input.Color.a * saturate(input.Additional.z);
+	}
+	else if (INT_EQUALS(PSShaderType, 17))
+	{
+		// Raster text
+
+		float dfValue = SAMPLE2D(txBuffer1, input.Additional.xy) COH_A8_SAMPLE_MASK;
+		const float lum = GetLuminance(input.Color.xyz);
+		outColor = input.Color * pow(abs(dfValue), 1.45f - lum);
+	}
+	else if (INT_EQUALS(PSShaderType, 18))
+	{
+		// SDF Text
+
+		float dfValue = SAMPLE2D(txBuffer2, input.Additional.xy) COH_A8_SAMPLE_MASK;
+	#if SHOW_DF
+		outColor = float4(dfValue.xxx, 1);
+		return;
+	#endif
+		// Values should be in [-4, 4]
+		dfValue = (dfValue * DISTANCE_FIELD_MULTIPLIER) - DISTANCE_FIELD_MULTIPLIER_DIV2;
+
+		dfValue = smoothstep(-DISTANCE_FIELD_THRESHOLD / input.Additional.z, DISTANCE_FIELD_THRESHOLD / input.Additional.z, dfValue);
+
+		const float lum = GetLuminance(input.Color.xyz);
+		outColor = input.Color * pow(dfValue, 1.45f - lum);
+	}
+	else if (INT_EQUALS(PSShaderType, 22))
+	{
+		// SDF-on-GPU Text
+
+		float dfValue = SAMPLE2D(txBuffer2, input.Additional.xy) COH_SDF_GPU_SAMPLE_MASK;
+
+	#if SHOW_DF
+		outColor = float4(dfValue.xxx, 1);
+		return;
+	#endif
+
+		const float halfSmooth = input.Additional.z;
+		const float threshold = 0.5f;
+		dfValue = smoothstep(threshold - halfSmooth, threshold + halfSmooth, dfValue);
+
+		#ifdef COH_ALLOW_SS
+
+		const float dscale = 0.352; // half of 1/sqrt2
+		const float2 duv = dscale * (ddx(input.Additional.xy) + ddy(input.Additional.xy));
+		const float4 box = float4(input.Additional.xy - duv, input.Additional.xy + duv);
+
+		float sum = smoothstep(threshold - halfSmooth, threshold + halfSmooth, SAMPLE2D(txBuffer2, box.xy) COH_A8_SAMPLE_MASK)
+			+ smoothstep(threshold - halfSmooth, threshold + halfSmooth, SAMPLE2D(txBuffer2, box.zw) COH_A8_SAMPLE_MASK)
+			+ smoothstep(threshold - halfSmooth, threshold + halfSmooth, SAMPLE2D(txBuffer2, box.xw) COH_A8_SAMPLE_MASK)
+			+ smoothstep(threshold - halfSmooth, threshold + halfSmooth, SAMPLE2D(txBuffer2, box.zy) COH_A8_SAMPLE_MASK);
+
+
+		// weighted average, with 4 extra points having 0.5 weight each,
+		// so 1 + 0.5*4 = 3 is the divisor
+		dfValue = (dfValue + 0.5 * sum) / 3.0;
+
+		#endif
+
+		const float lum = GetLuminance(input.Color.xyz);
+		outColor = input.Color * pow(dfValue, 1.45f - lum);
+
+	}
+	else if (INT_EQUALS(PSShaderType, 24))
+	{
+		// MSDF text
+
+		float3 color = SAMPLE2D(txBuffer3, input.Additional.xy).xyz;
+
+	#if SHOW_DF
+		outColor = float4(color.xyz, 1);
+		return;
+	#endif
+
+		float dfDeltaPerScreenPixel = input.Additional.z;
+		const float halfSmooth = dfDeltaPerScreenPixel;
+
+		float threshold = 0.5f;
+		float dfValue = max(min(color.r, color.g), min(max(color.r, color.g), color.b));
+		dfValue = smoothstep(threshold - halfSmooth, threshold + halfSmooth, dfValue);
+
+		outColor = input.Color * dfValue;
+	}
+}
+
+#endif // COH_SHADE_GEOMETRY_BATCHED_GUARD

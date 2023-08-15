@@ -1,0 +1,17 @@
+{
+    "name": "Cohtml.Editor",
+    "references": [
+        "GUID:6ae0815724f13534aa2c5f71ca344bab"
+    ],
+    "optionalUnityReferences": [],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": []
+}

@@ -1,0 +1,28 @@
+{
+    "name": "Cohtml.RenderingBackend",
+    "references": [],
+    "includePlatforms": [
+        "Android",
+        "Editor",
+        "GameCoreScarlett",
+        "GameCoreXboxOne",
+        "iOS",
+        "LinuxStandalone64",
+        "macOSStandalone",
+        "PS4",
+        "PS5",
+        "Stadia",
+        "Switch",
+        "WindowsStandalone32",
+        "WindowsStandalone64",
+        "XboxOne"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": true,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

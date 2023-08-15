@@ -1,0 +1,19 @@
+{
+    "name": "Cohtml.Runtime",
+    "references": [
+        "Unity.InputSystem",
+        "Unity.InputSystem.PS4",
+        "Cohtml.RenderingBackend",
+        "Unity.RenderPipelines.Core.Runtime",
+        "Unity.RenderPipelines.HighDefinition.Runtime"
+    ],
+    "optionalUnityReferences": [],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": []
+}

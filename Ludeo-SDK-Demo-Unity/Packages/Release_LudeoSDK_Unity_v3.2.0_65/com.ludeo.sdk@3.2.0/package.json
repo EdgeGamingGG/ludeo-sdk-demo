@@ -1,0 +1,16 @@
+{
+  "name": "com.ludeo.sdk",
+  "displayName": "Ludeo SDK",
+  "version": "3.2.0",
+  "description": "The Ludeo SDK for Unity is a powerful tool for game studios that enables players to generate a new form of gaming content by capturing and sharing their highlight moments within a game, which other players can discover and replay. The SDK is simple to install and configure, offering many features for enhancing user engagement and community development.",
+  "author": "Ludeo",
+  "documentationURL": "https://dev.ludeo.com",
+  "changelogURL": "https://dev.ludeo.com",
+  "licenseURL": "https://dev.ludeo.com",
+  "dependencies": {
+    "com.unity.nuget.newtonsoft-json": "3.0.2",
+    "com.unity.textmeshpro": "2.1.6"
+  },
+  "unity": "2019.4",
+  "type": "library"
+}

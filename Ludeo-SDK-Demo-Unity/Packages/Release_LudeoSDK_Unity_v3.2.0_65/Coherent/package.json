@@ -1,0 +1,23 @@
+{
+    "category": "User Interface",
+    "displayName": "Cohtml",
+    "name": "com.coherent-labs.cohtml",
+    "license": "See license LICENSE.txt",
+    "author": {
+        "url": "https://coherent-labs.com/",
+        "name": "Coherent Labs AD",
+        "email": "office@coherent-labs.com"
+    },
+    "unity": "2019.4",
+    "version": "1.42.0-build1",
+    "unityRelease": "0b5",
+    "keywords": [
+        "ui",
+        "html",
+        "css",
+        "javascript",
+        "js"
+    ],
+    "type": "library",
+    "description": "This is a package of Cohtml library. Supports Microsoft Windows, Linux, Apple Mac, Android, iOS."
+}
